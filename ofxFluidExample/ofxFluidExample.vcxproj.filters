@@ -117,9 +117,6 @@
     <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxTint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\ofxFX.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxFX\src\ofxFXObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -150,8 +147,11 @@
     <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxThreshold.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\ofxFX.h">
+      <Filter>addons\ofxFX\src</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxFluid\src\ofxFluid.h">
-      <Filter>Header Files</Filter>
+      <Filter>addons\ofxFluid\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
