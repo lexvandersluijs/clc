@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxFluidExample", "ofxFluid
 		{5837595D-ACA9-485C-8E76-729040CE4B0B} = {5837595D-ACA9-485C-8E76-729040CE4B0B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Easter2014", "Easter2014\Easter2014.vcxproj", "{F88392EA-EF6B-4FFA-A800-CCEB95C28C0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -27,6 +29,10 @@ Global
 		{BA9B4166-FEFC-4EAB-A685-42EE34F2DF58}.Debug|Win32.Build.0 = Debug|Win32
 		{BA9B4166-FEFC-4EAB-A685-42EE34F2DF58}.Release|Win32.ActiveCfg = Release|Win32
 		{BA9B4166-FEFC-4EAB-A685-42EE34F2DF58}.Release|Win32.Build.0 = Release|Win32
+		{F88392EA-EF6B-4FFA-A800-CCEB95C28C0B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F88392EA-EF6B-4FFA-A800-CCEB95C28C0B}.Debug|Win32.Build.0 = Debug|Win32
+		{F88392EA-EF6B-4FFA-A800-CCEB95C28C0B}.Release|Win32.ActiveCfg = Release|Win32
+		{F88392EA-EF6B-4FFA-A800-CCEB95C28C0B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
