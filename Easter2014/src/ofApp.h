@@ -2,13 +2,19 @@
 
 #include "ofMain.h"
 #include "ofxFluid.h"
+#include "ofxGaussianBlur.h"
 #include "ofxKinectCommonBridge.h"
+#include "ofxTimeline.h"
+#include "ofxGui.h"
+
+#include "KinectForProjection.h"
 
 class testApp : public ofBaseApp{
 public:
     void setup();
     void update();
     void draw();
+	void exit();
 
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -27,11 +33,30 @@ public:
     bool    bPaint, bObstacle, bBounding, bClear;
 
 	// Kinect
-	ofxKinectCommonBridge kinect;
-	ofVec3f head, leftHand, leftHandPrev, rightHand, rightHandPrev;
-	bool hasSkeleton;
-	float jointDistance;
+	KinectForProjection* kinectForProjection[2];
+
+	// Control
+	ofxTimeline timeline;
+
+	ofxPanel gui;
+	ofxFloatSlider kinectVerticalOffset;
+	ofxFloatSlider kinectForwardOffset;
+	ofxFloatSlider toPresentationSpaceFocalLength;
+	ofxFloatSlider toPresentationSpacePrincipalX;
+	ofxFloatSlider toPresentationSpacePrincipalY;
+	//ofxColorSlider color;
+	//ofxVec2Slider center;
+	//ofxIntSlider circleResolution;
+	//ofxToggle filled;
+	//ofxButton twoCircles;
+	//ofxButton ringButton;
+	//ofxLabel screenSize;
+
+
+	// Visual effects
+	ofxGaussianBlur		blur;
 
 private:
 	void updateKinectInput();
+	void updateFromTimelineAndDraw();
 };

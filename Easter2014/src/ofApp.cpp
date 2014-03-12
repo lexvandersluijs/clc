@@ -37,77 +37,70 @@ void testApp::setup()
 
     //ofSetWindowShape(width, height);
 
-	// -------------- initialize Kinect --------------
-	kinect.initSensor( 0 );
-	
-	kinect.initColorStream(640, 480);
-	kinect.initDepthStream(320, 240, true);
-	kinect.initSkeletonStream(true);
+	// -------------- initialize Kinect(s) --------------
+	kinectForProjection[0] = new KinectForProjection();
+	kinectForProjection[0]->kinectOffsetFromProjector.x = 0;
+	kinectForProjection[0]->kinectOffsetFromProjector.y = -300; // cm
+	kinectForProjection[0]->kinectOffsetFromProjector.z = 300; // assuming z points forward
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.x = 1024 / 2;
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.y = 0;
+	kinectForProjection[0]->toPresentationSpaceFocalLength = 256; // pixels
+	kinectForProjection[0]->setup(0);
+	//kinectForProjection[1] = new KinectForProjection();
+	//kinectForProjection[1].setup(1);
 
-	kinect.start();
+	// ---------------- initialize timeline --------------
+	timeline.setup(); //registers events
+	timeline.setDurationInSeconds(10); //sets time
+	timeline.setLoopType(OF_LOOP_NORMAL); //turns the timeline to loop
 
-	kinect.getNuiSensor()->NuiCameraElevationSetAngle(10);
+	//add a tracks, etc
+	timeline.addCurves("MyCircleRadius", ofRange(0, 200));
+	timeline.play();
 
-	hasSkeleton = false;
-	jointDistance = 1.f;
+	// ------------------ intialize GUI -------------------
+	gui.setup(); // most of the time you don't need a name
+	gui.setDefaultWidth(400);
+
+	// set up parameters for Kinect 0
+	gui.add(kinectVerticalOffset.setup( "kinect 0 vertical offset", kinectForProjection[0]->kinectOffsetFromProjector.y, -300, 300, 400 ));
+	gui.add(kinectForwardOffset.setup( "kinect 0 forward offset", kinectForProjection[0]->kinectOffsetFromProjector.z, 100, 400, 400 ));
+	gui.add(toPresentationSpaceFocalLength.setup( "pres 0 FL", kinectForProjection[0]->toPresentationSpaceFocalLength, 100, 500, 400 ));
+	gui.add(toPresentationSpacePrincipalX.setup( "pres 0 PP X", kinectForProjection[0]->toPresentationSpacePrincipalPoint.x, -512, 3072, 400 ));
+	gui.add(toPresentationSpacePrincipalY.setup( "pres 0 PP Y", kinectForProjection[0]->toPresentationSpacePrincipalPoint.y, -384, 384, 400 ));
+
+	// TODO: same for Kinect 1
+
+
+	// ------------------ initialize visual effects -------
+	blur.passes = 2;
+	blur.allocate(width/2, height/2);
 }
 
 void testApp::updateKinectInput()
 {
-	kinect.update();
+	// get values from GUI for Kinect 0
+	kinectForProjection[0]->kinectOffsetFromProjector.y = kinectVerticalOffset;
+	kinectForProjection[0]->kinectOffsetFromProjector.z = kinectForwardOffset;
+	kinectForProjection[0]->toPresentationSpaceFocalLength = toPresentationSpaceFocalLength;
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.x = toPresentationSpacePrincipalX;
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.y = toPresentationSpacePrincipalY;
 
-	if(kinect.isNewSkeleton()) 
-	{
+	// TODO: same for Kinect 1
 
-		//cout << "kinect.getSkeletons().size() = " << kinect.getSkeletons().size() << endl;
+	kinectForProjection[0]->update();
+	//kinectForProjection[1].update();
 
-		for( int i = 0; i < kinect.getSkeletons().size(); i++) 
-		{
+}
 
-			if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end())
-			{
-				//cout << "head was found" << endl;
-
-
-				// just get the first one
-				SkeletonBone headBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second;
-				SkeletonBone leftHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
-				SkeletonBone rightHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
-
-				ofVec3f hb( headBone.getScreenPosition().x, headBone.getScreenPosition().y, 0 );
-				head = head.getInterpolated(hb, 0.5);
-				head.z =  ofInterpolateCosine( head.z, headBone.getStartPosition().x, 0.5) + 0.1;
-
-				leftHandPrev = leftHand;
-				ofVec3f lhb(leftHandBone.getScreenPosition().x, leftHandBone.getScreenPosition().y, 0);
-				leftHand = leftHand.getInterpolated( lhb, 0.5);
-				leftHand.z = ofInterpolateCosine( leftHand.z, leftHandBone.getStartPosition().x, 0.5);
-
-				rightHandPrev = rightHand;
-				ofVec3f rhb(rightHandBone.getScreenPosition().x, rightHandBone.getScreenPosition().y, 0);
-				rightHand = rightHand.getInterpolated( rhb, 0.5);
-				rightHand.z = ofInterpolateCosine( rightHand.z, rightHandBone.getStartPosition().x, 0.5);
-
-				cout << headBone.getScreenPosition()  << endl;
-				cout << rightHandBone.getScreenPosition() << endl;
-				cout << leftHandBone.getScreenPosition() << endl;
-
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second.getScreenPosition() << endl;
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second.getScreenPosition() << endl;
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second.getScreenPosition() << endl;
-
-				jointDistance = head.distance(rightHand);
-				jointDistance += leftHand.distance(rightHand);
-				jointDistance += leftHand.distance(head);
-
-				hasSkeleton = true;
-
-				return;
-			}
-		}
-	}
-	//else
-	//	cout << "no new skeleton"  << endl;
+void testApp::updateFromTimelineAndDraw()
+{
+	//the value of changingRadius will be different depending on the timeline
+	float changingRadius = timeline.getValue("MyCircleRadius");
+	//use the value for something amazing!
+	ofCircle(mouseX, mouseY, changingRadius);
+	//don't forget to draw your timeline so you can edit it.
+	timeline.draw();
 }
 
 //--------------------------------------------------------------
@@ -124,10 +117,10 @@ void testApp::update()
     c.normalize();
     //fluid.addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
 
-	if(hasSkeleton)
+	if(kinectForProjection[0]->hasSkeleton)
 	{
 		// ------- compute movement direction of left hand ---------------
-		ofPoint leftHandDirection = (leftHand - leftHandPrev) * 10.0;
+		
 
 		// determine color
 		ofPoint leftHandC = ofPoint(640*0.5, 480*0.5) - m;
@@ -135,13 +128,14 @@ void testApp::update()
 		ofFloatColor leftHandColor = ofFloatColor(leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 		// scale input to window size (temporary)
+		ofVec3f leftHand = kinectForProjection[0]->leftHand;
 		ofVec3f leftHandPos = leftHand;
 		leftHandPos.x = (leftHand.x / 640.0f) * (float)ofGetWindowWidth();
 		leftHandPos.y = (leftHand.y / 480.0f) * (float)ofGetWindowHeight();
-		fluid.addTemporalForce(leftHandPos, leftHandDirection, leftHandColor,3.0f);
+		fluid.addTemporalForce(leftHandPos, kinectForProjection[0]->leftHandDirection, leftHandColor,3.0f);
 
 		// ------- compute movement direction of right hand ---------------
-		ofPoint rightHandDirection = (rightHand - rightHandPrev) * 10.0;
+		
 
 		// determine color
 		ofPoint rightHandC = ofPoint(640*0.5, 480*0.5) - m;
@@ -149,11 +143,12 @@ void testApp::update()
 		ofFloatColor rightHandColor = ofFloatColor(rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 		// scale input to window size (temporary)
+		ofVec3f rightHand = kinectForProjection[0]->rightHand;
 		ofVec3f rightHandPos = rightHand;
 		rightHandPos.x = (rightHand.x / 640.0f) * (float)ofGetWindowWidth();
 		rightHandPos.y = (rightHand.y / 480.0f) * (float)ofGetWindowHeight();
 		//cout << "rightHandPos x,y = " << rightHandPos.x << ", " << rightHandPos.y << endl;
-		fluid.addTemporalForce(rightHandPos, rightHandDirection, rightHandColor,3.0f);
+		fluid.addTemporalForce(rightHandPos, kinectForProjection[0]->rightHandDirection, rightHandColor,3.0f);
 
 	}
 
@@ -165,14 +160,38 @@ void testApp::update()
 }
 
 //--------------------------------------------------------------
-void testApp::draw(){
+void testApp::draw()
+{
     ofBackgroundGradient(ofColor::gray, ofColor::black, OF_GRADIENT_LINEAR);
     
+	// ------ fluid sim ----------------
     fluid.draw();
+
+	// ------------ Timeline -----------
+	//updateFromTimelineAndDraw();
+
+	//kinect.getDepthTexture().draw(0, 0);
+	//fluid.getVelocityTexture().draw(0, 0);
+
+	//blur << fluid.getVelocityTexture();
+	//blur.update();
+
+	// stretch blurred bitmap while rendering
+	//blur.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+
+	// ---------------- GUI -----------------
+	gui.draw();
+}
+
+void testApp::exit()
+{
+	delete kinectForProjection[0];
+	//delete kinectForProjection[1];
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key){
+void testApp::keyPressed(int key)
+{
     if( key == 'p')
         bPaint = !bPaint;
     if( key == 'o')
