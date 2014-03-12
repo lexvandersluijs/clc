@@ -57,100 +57,10 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxBlend.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxClone.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxMask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxMultiTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBarrelChromaAb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBloom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBlur.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBokeh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxChromaAb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxChromaGlitch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxContrast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGaussianBlur.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGlow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGrayscale.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxInverse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxLUT.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxMedian.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxOldTv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxFire.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxGrayScott.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxNoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxTint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxFX\src\ofxFXObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxFX\src\ofxSwapBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxAbsDiff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxBounce.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxDisplacePixels.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxEdgeDetect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxNormals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxRipples.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxSubstract.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxThreshold.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxFX\src\ofxFX.h">
@@ -195,6 +105,96 @@
     <ClInclude Include="src\ofApp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxBlend.h">
+      <Filter>addons\ofxFX\src\composers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxClone.h">
+      <Filter>addons\ofxFX\src\composers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxMask.h">
+      <Filter>addons\ofxFX\src\composers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxMultiTexture.h">
+      <Filter>addons\ofxFX\src\composers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBarrelChromaAb.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBloom.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBlur.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxBokeh.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxChromaAb.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxChromaGlitch.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxContrast.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGaussianBlur.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGlow.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxGrayscale.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxInverse.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxLUT.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxMedian.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\filters\ofxOldTv.h">
+      <Filter>addons\ofxFX\src\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxFire.h">
+      <Filter>addons\ofxFX\src\generative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxGrayScott.h">
+      <Filter>addons\ofxFX\src\generative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxNoise.h">
+      <Filter>addons\ofxFX\src\generative</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\generative\ofxTint.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxAbsDiff.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxBounce.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxEdgeDetect.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxDisplacePixels.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxNormals.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxRipples.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxSubstract.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxThreshold.h">
+      <Filter>addons\ofxFX\src\operations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -238,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp">
       <Filter>addons\ofxKinectCommonBridge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KinectForProjection.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

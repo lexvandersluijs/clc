@@ -39,27 +39,28 @@ void KinectForProjection::update()
 				SkeletonBone leftHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
 				SkeletonBone rightHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
 
-				ofVec3f hb( headBone.getScreenPosition().x, headBone.getScreenPosition().y, 0 );
+				ofVec3f hb( -headBone.getStartPosition().x, headBone.getStartPosition().y, 0 );
 				head = head.getInterpolated(hb, 0.5);
 				head.z =  ofInterpolateCosine( head.z, headBone.getStartPosition().x, 0.5) + 0.1;
 
 				leftHandPrev = leftHand;
-				ofVec3f lhb(leftHandBone.getScreenPosition().x, leftHandBone.getScreenPosition().y, 0);
+				ofVec3f lhb(-leftHandBone.getStartPosition().x, leftHandBone.getStartPosition().y, 0);
 				leftHand = leftHand.getInterpolated( lhb, 0.5);
 				leftHand.z = ofInterpolateCosine( leftHand.z, leftHandBone.getStartPosition().x, 0.5);
 
 				leftHandDirection = (leftHand - leftHandPrev) * 10.0;
 
 				rightHandPrev = rightHand;
-				ofVec3f rhb(rightHandBone.getScreenPosition().x, rightHandBone.getScreenPosition().y, 0);
+				ofVec3f rhb(-rightHandBone.getStartPosition().x, rightHandBone.getStartPosition().y, 0);
 				rightHand = rightHand.getInterpolated( rhb, 0.5);
 				rightHand.z = ofInterpolateCosine( rightHand.z, rightHandBone.getStartPosition().x, 0.5);
 
 				rightHandDirection = (rightHand - rightHandPrev) * 10.0;
 
-				cout << headBone.getScreenPosition()  << endl;
+				//cout << headBone.getScreenPosition()  << endl;
+				cout << rightHandBone.getStartPosition() << endl;
 				cout << rightHandBone.getScreenPosition() << endl;
-				cout << leftHandBone.getScreenPosition() << endl;
+				//cout << leftHandBone.getScreenPosition() << endl;
 
 				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second.getScreenPosition() << endl;
 				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second.getScreenPosition() << endl;

@@ -12,7 +12,7 @@ void testApp::setup()
 
     // Initial Allocation
     //
-    fluid.allocate(width, height, 0.2);
+    fluid.allocate(width, height, 0.05);
     
     // Seting the gravity set up & injecting the background image
     //
@@ -33,7 +33,7 @@ void testApp::setup()
     
     // Adding constant forces
     //
-    //fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
+    fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 3.f);
 
     //ofSetWindowShape(width, height);
 
@@ -125,13 +125,13 @@ void testApp::update()
 		// determine color
 		ofPoint leftHandC = ofPoint(640*0.5, 480*0.5) - m;
 		leftHandC.normalize();
-		ofFloatColor leftHandColor = ofFloatColor(leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
+		ofFloatColor leftHandColor = ofFloatColor(1.0f, 0.f, 0.f); //leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 		// scale input to window size (temporary)
 		ofVec3f leftHand = kinectForProjection[0]->leftHand;
 		ofVec3f leftHandPos = leftHand;
-		leftHandPos.x = (leftHand.x / 640.0f) * (float)ofGetWindowWidth();
-		leftHandPos.y = (leftHand.y / 480.0f) * (float)ofGetWindowHeight();
+		leftHandPos.x = leftHand.x * 512 + 512;
+		leftHandPos.y = -leftHand.y * 384 + 512;
 		fluid.addTemporalForce(leftHandPos, kinectForProjection[0]->leftHandDirection, leftHandColor,3.0f);
 
 		// ------- compute movement direction of right hand ---------------
@@ -140,13 +140,13 @@ void testApp::update()
 		// determine color
 		ofPoint rightHandC = ofPoint(640*0.5, 480*0.5) - m;
 		rightHandC.normalize();
-		ofFloatColor rightHandColor = ofFloatColor(rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
+		ofFloatColor rightHandColor = ofFloatColor(1.f, 1.f, 0.f); //rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 		// scale input to window size (temporary)
 		ofVec3f rightHand = kinectForProjection[0]->rightHand;
 		ofVec3f rightHandPos = rightHand;
-		rightHandPos.x = (rightHand.x / 640.0f) * (float)ofGetWindowWidth();
-		rightHandPos.y = (rightHand.y / 480.0f) * (float)ofGetWindowHeight();
+		rightHandPos.x = rightHand.x * 512 + 512;
+		rightHandPos.y = -rightHand.y * 384 + 512;
 		//cout << "rightHandPos x,y = " << rightHandPos.x << ", " << rightHandPos.y << endl;
 		fluid.addTemporalForce(rightHandPos, kinectForProjection[0]->rightHandDirection, rightHandColor,3.0f);
 
@@ -168,9 +168,9 @@ void testApp::draw()
     fluid.draw();
 
 	// ------------ Timeline -----------
-	//updateFromTimelineAndDraw();
+	updateFromTimelineAndDraw();
 
-	//kinect.getDepthTexture().draw(0, 0);
+	kinectForProjection[0]->kinect.getDepthTexture().draw(0, 0);
 	//fluid.getVelocityTexture().draw(0, 0);
 
 	//blur << fluid.getVelocityTexture();
@@ -182,6 +182,7 @@ void testApp::draw()
 	// ---------------- GUI -----------------
 	gui.draw();
 }
+
 
 void testApp::exit()
 {
