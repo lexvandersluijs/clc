@@ -39,7 +39,7 @@ void KinectForProjection::update()
 				SkeletonBone leftHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
 				SkeletonBone rightHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
 
-				ofVec3f hb( -headBone.getStartPosition().x, headBone.getStartPosition().y, 0 );
+/*				ofVec3f hb( -headBone.getStartPosition().x, headBone.getStartPosition().y, 0 );
 				head = head.getInterpolated(hb, 0.5);
 				head.z =  ofInterpolateCosine( head.z, headBone.getStartPosition().x, 0.5) + 0.1;
 
@@ -56,11 +56,21 @@ void KinectForProjection::update()
 				rightHand.z = ofInterpolateCosine( rightHand.z, rightHandBone.getStartPosition().x, 0.5);
 
 				rightHandDirection = (rightHand - rightHandPrev) * 10.0;
+*/
+				// transform the 3D tracked values from Kinect to our 2D presentation/simulation space
+				presentationSpaceJoints[Head].setNewPosition(transformTrackedPointToProjectorScreen(headBone.getStartPosition()));
+				presentationSpaceJoints[LeftHand].setNewPosition(transformTrackedPointToProjectorScreen(leftHandBone.getStartPosition()));
+				presentationSpaceJoints[RightHand].setNewPosition(transformTrackedPointToProjectorScreen(rightHandBone.getStartPosition()));
 
-				//cout << headBone.getScreenPosition()  << endl;
-				cout << rightHandBone.getStartPosition() << endl;
-				cout << rightHandBone.getScreenPosition() << endl;
-				//cout << leftHandBone.getScreenPosition() << endl;
+				static int counter = 0;
+				// dump to console to check results
+				if(counter%20 == 0)
+				{
+					cout << "Head 3D: " << headBone.getStartPosition() << ", 2D: " << presentationSpaceJoints[Head].getPosition() << endl;
+					cout << "LeftHand 3D: " << leftHandBone.getStartPosition() << ", 2D: " << presentationSpaceJoints[LeftHand].getPosition() << endl;
+					cout << "RightHand 3D: " << rightHandBone.getStartPosition() << ", 2D: " << presentationSpaceJoints[RightHand].getPosition() << endl;
+				}
+				counter++;
 
 				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second.getScreenPosition() << endl;
 				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second.getScreenPosition() << endl;
@@ -83,20 +93,21 @@ void KinectForProjection::update()
 ofVec2f KinectForProjection::projectPoint(ofVec3f p)
 {
 	ofVec2f projected;
-	projected.x = p.x / p.z;
-	projected.y = p.y / p.z;
+	projected.x = -p.x / p.z;	// invert x: Kinect's convention is based on that it is looking away from the screen
+	projected.y =  p.y / p.z;	// but in our case it is looking toward the screen
 			
-	projected.x *= toPresentationSpaceFocalLength;
-	projected.y *= toPresentationSpaceFocalLength; // invert y: in screen-space +y is down
+	projected.x *=  toPresentationSpaceFocalLength;
+	projected.y *= -toPresentationSpaceFocalLength; // invert y: in screen-space +y is down
 			
-	ofVec2f projectedPoint = p + toPresentationSpacePrincipalPoint;
+	ofVec2f projectedPoint = projected + toPresentationSpacePrincipalPoint;
 	return projectedPoint;
 }
 
 ofVec2f KinectForProjection::transformTrackedPointToProjectorScreen(ofVec3f point)
 {
 	// we assume that the axes of the projector and the kinect (upright) scanning volume are aligned
-	ofVec3f pointInProjectorSpace = point + kinectOffsetFromProjector;
+	// multiply with 100 to convert from meters to centimeters
+	ofVec3f pointInProjectorSpace = (point * 100.f)+ kinectOffsetFromProjector;
 
 	// project the point to the projector to get normalized device coordinates
 	return projectPoint(pointInProjectorSpace);

@@ -33,17 +33,18 @@ public:
     bool    bPaint, bObstacle, bBounding, bClear;
 
 	// Kinect
+	int nrOfKinects;
 	KinectForProjection* kinectForProjection[2];
 
 	// Control
 	ofxTimeline timeline;
 
 	ofxPanel gui;
-	ofxFloatSlider kinectVerticalOffset;
-	ofxFloatSlider kinectForwardOffset;
-	ofxFloatSlider toPresentationSpaceFocalLength;
-	ofxFloatSlider toPresentationSpacePrincipalX;
-	ofxFloatSlider toPresentationSpacePrincipalY;
+	ofxFloatSlider kinectVerticalOffset0;
+	ofxFloatSlider kinectForwardOffset0;
+	ofxFloatSlider toPresentationSpaceFocalLength0;
+	ofxFloatSlider toPresentationSpacePrincipalX0;
+	ofxFloatSlider toPresentationSpacePrincipalY0;
 	//ofxColorSlider color;
 	//ofxVec2Slider center;
 	//ofxIntSlider circleResolution;
