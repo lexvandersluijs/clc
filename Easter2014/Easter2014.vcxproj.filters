@@ -195,6 +195,12 @@
     <ClInclude Include="..\..\..\addons\ofxFX\src\operations\ofxThreshold.h">
       <Filter>addons\ofxFX\src\operations</Filter>
     </ClInclude>
+    <ClInclude Include="src\FluidEffect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleEffect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

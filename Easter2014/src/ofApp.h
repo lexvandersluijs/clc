@@ -6,8 +6,11 @@
 #include "ofxKinectCommonBridge.h"
 #include "ofxTimeline.h"
 #include "ofxGui.h"
+#include "ofxGlow.h"
 
 #include "KinectForProjection.h"
+#include "FluidEffect.h"
+#include "ParticleEffect.h"
 
 class testApp : public ofBaseApp{
 public:
@@ -25,12 +28,12 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-		
-    ofxFluid fluid;
-    
+
+
+	FluidEffect fluidEffect;
+    ParticleEffect particleEffect;
+
     ofVec2f oldM;
-    int     width,height;
-    bool    bPaint, bObstacle, bBounding, bClear;
 
 	// Kinect
 	int nrOfKinects;

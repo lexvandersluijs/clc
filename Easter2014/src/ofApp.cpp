@@ -6,37 +6,13 @@ void testApp::setup()
 	// ------------------------ init fluid simulation -----------------------
     ofEnableAlphaBlending();
     ofSetCircleResolution(100);
-    
-	width = ofGetWindowWidth(); //300;
-    height = ofGetWindowHeight(); // 600;
 
-    // Initial Allocation
-    //
 	// note: we make the size of the simulation independent of the screen size, so that we can test
 	// everything in the right proportions and at the right resolution, even before we have the 
 	// triple-beamer, double-kinect setup..
-    fluid.allocate(2400, 800, 0.2); 
-    
-    // Seting the gravity set up & injecting the background image
-    //
-    fluid.dissipation = 0.99;
-    fluid.velocityDissipation = 0.99;
-    
-    fluid.setGravity(ofVec2f(0.0,0.0));
-//    fluid.setGravity(ofVec2f(0.0,0.0098));
-    
-    //  Set obstacle
-    //
-    fluid.begin();
-    ofSetColor(0,0);
-    ofSetColor(255);
-    ofCircle(width*0.5, height*0.35, 40);
-    fluid.end();
-    fluid.setUseObstacles(false);
-    
-    // Adding constant forces
-    //
-    fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 3.f);
+	fluidEffect.setup(2400, 600);
+
+	particleEffect.setup(2400, 600);
 
     //ofSetWindowShape(width, height);
 
@@ -78,7 +54,7 @@ void testApp::setup()
 
 	// ------------------ initialize visual effects -------
 	blur.passes = 2;
-	blur.allocate(width/2, height/2);
+	blur.allocate(fluidEffect.getWidth(), fluidEffect.getHeight()); // same size as fluid
 }
 
 void testApp::updateKinectInput()
@@ -121,7 +97,7 @@ void testApp::update()
     oldM = m;
     ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
     c.normalize();
-    //fluid.addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+	fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
 
 	// get the inputs from all Kinects and insert the relevant forces into the fluid simulation
 	for(int i=0; i<nrOfKinects; i++)
@@ -141,7 +117,7 @@ void testApp::update()
 			//ofVec3f leftHandPos = leftHand;
 			//leftHandPos.x = leftHand.x * 512 + 512;
 			//leftHandPos.y = -leftHand.y * 384 + 512;
-			fluid.addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(),
+			fluidEffect.getFluid().addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(),
 								   kinectForProjection[i]->presentationSpaceJoints[LeftHand].getVelocity(), 
 								   leftHandColor, 3.0f);
 
@@ -160,7 +136,7 @@ void testApp::update()
 			//rightHandPos.y = -rightHand.y * 384 + 512;
 			//cout << "rightHandPos x,y = " << rightHandPos.x << ", " << rightHandPos.y << endl;
 			//fluid.addTemporalForce(rightHandPos, kinectForProjection[0]->rightHandDirection, rightHandColor,3.0f);
-			fluid.addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(),
+			fluidEffect.getFluid().addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(),
 								   kinectForProjection[i]->presentationSpaceJoints[RightHand].getVelocity(), 
 								   rightHandColor, 3.0f);
 		}
@@ -168,8 +144,10 @@ void testApp::update()
 
     //  Update
     //
-    fluid.update();
+    fluidEffect.update();
     
+	particleEffect.update();
+
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
@@ -179,7 +157,12 @@ void testApp::draw()
     ofBackgroundGradient(ofColor::gray, ofColor::black, OF_GRADIENT_LINEAR);
     
 	// ------ fluid sim ----------------
-    fluid.draw();
+    fluidEffect.draw(0, 0, 2400, 600);
+
+	// --------- particles -------------
+	ofEnableBlendMode(OF_BLENDMODE_ADD);
+	particleEffect.draw(0, 0, 2400, 600);
+	ofDisableBlendMode();
 
 	// ------------ Timeline -----------
 	updateFromTimelineAndDraw();
@@ -216,14 +199,7 @@ void testApp::exit()
 //--------------------------------------------------------------
 void testApp::keyPressed(int key)
 {
-    if( key == 'p')
-        bPaint = !bPaint;
-    if( key == 'o')
-        bObstacle = !bObstacle;
-    if( key == 'b')
-        bBounding = !bBounding;
-    if( key == 'c')
-        bClear = !bClear;
+	fluidEffect.keyPressed(key);
 }
 
 //--------------------------------------------------------------
