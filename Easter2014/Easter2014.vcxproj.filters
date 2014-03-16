@@ -46,6 +46,12 @@
     <Filter Include="addons\ofxKinectCommonBridge">
       <UniqueIdentifier>{8539925f-bb69-4531-9111-c0c8b7613d51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ParticleSystem">
+      <UniqueIdentifier>{538f2829-a75d-4302-9e53-280925547af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{f8fd5f63-bdd4-4656-9c9f-40d56a674808}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -201,6 +207,30 @@
     <ClInclude Include="src\ParticleEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ParticleSystem\Particle.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\ParticleGenerator.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\ParticleManager.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\ParticleRenderer.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\ForceField.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\ParticleAnimator.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\SimulationAnimator.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\glInfo.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -247,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="src\KinectForProjection.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\glInfo.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

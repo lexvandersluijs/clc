@@ -142,6 +142,14 @@
     <ClInclude Include="src\FluidEffect.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ParticleEffect.h" />
+    <ClInclude Include="src\ParticleSystem\ForceField.h" />
+    <ClInclude Include="src\ParticleSystem\Particle.h" />
+    <ClInclude Include="src\ParticleSystem\ParticleAnimator.h" />
+    <ClInclude Include="src\ParticleSystem\ParticleGenerator.h" />
+    <ClInclude Include="src\ParticleSystem\ParticleManager.h" />
+    <ClInclude Include="src\ParticleSystem\ParticleRenderer.h" />
+    <ClInclude Include="src\ParticleSystem\SimulationAnimator.h" />
+    <ClInclude Include="src\Utils\glInfo.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -160,6 +168,7 @@
     <ClCompile Include="src\KinectForProjection.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\Utils\glInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

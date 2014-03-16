@@ -13,6 +13,8 @@ public:
 		// triple-beamer, double-kinect setup..
 		fluid.allocate(width, height, 0.2); 
     
+		_velocityMap.allocate(fluid.getVelocityTexture().getWidth(), fluid.getVelocityTexture().getHeight(), 4);
+
 		// Seting the gravity set up & injecting the background image
 		//
 		fluid.dissipation = 0.99;
@@ -38,6 +40,9 @@ public:
 	void update()
 	{
 		fluid.update();
+
+		// SLOOOOW, framerate drops to 30 fps, from 60 (without Kinect attached)
+		//fluid.getVelocityTexture().readToPixels(_velocityMap);
 	}
 	void draw(int x, int y, float width, float height)
 	{
@@ -67,6 +72,8 @@ public:
 
 private:
     ofxFluid fluid;
+	ofFloatPixels _velocityMap;
+
 	int     width,height;
     bool    bPaint, bObstacle, bBounding, bClear;
 };

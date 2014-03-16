@@ -146,7 +146,7 @@ void testApp::update()
     //
     fluidEffect.update();
     
-	particleEffect.update();
+	particleEffect.update(ofVec2f(mouseX, mouseY));
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }

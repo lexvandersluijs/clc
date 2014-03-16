@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include "ofMain.h"
 #include "ofxFluid.h"
 #include "ofxGaussianBlur.h"
@@ -8,6 +10,13 @@
 #include "ofxGui.h"
 #include "ofxGlow.h"
 
+#include "ParticleSystem/Particle.h"
+#include "ParticleSystem/ParticleManager.h"
+#include "ParticleSystem/ParticleGenerator.h"
+#include "ParticleSystem/ParticleRenderer.h"
+#include "ParticleSystem/ParticleAnimator.h"
+#include "ParticleSystem/ForceField.h"
+#include "ParticleSystem/SimulationAnimator.h"
 #include "KinectForProjection.h"
 #include "FluidEffect.h"
 #include "ParticleEffect.h"
