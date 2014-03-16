@@ -20,7 +20,7 @@ public:
 		fluid.dissipation = 0.99;
 		fluid.velocityDissipation = 0.99;
     
-		fluid.setGravity(ofVec2f(0.0,0.0));
+		fluid.setGravity(ofVec2f(0.0,-0.098));
 	//    fluid.setGravity(ofVec2f(0.0,0.0098));
     
 		//  Set obstacle

@@ -49,9 +49,6 @@
     <Filter Include="Source Files\ParticleSystem">
       <UniqueIdentifier>{538f2829-a75d-4302-9e53-280925547af0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{f8fd5f63-bdd4-4656-9c9f-40d56a674808}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -228,8 +225,8 @@
     <ClInclude Include="src\ParticleSystem\SimulationAnimator.h">
       <Filter>Source Files\ParticleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\glInfo.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="src\glInfo.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,8 +275,8 @@
     <ClCompile Include="src\KinectForProjection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\glInfo.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="src\glInfo.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

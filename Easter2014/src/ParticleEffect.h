@@ -29,7 +29,7 @@ public:
 		height=h;
 
 		glow.allocate(width, height); 
-		glow.setRadius(10.f);
+		glow.setRadius(5.f);
 		glow.setPasses(2);
 
    	}

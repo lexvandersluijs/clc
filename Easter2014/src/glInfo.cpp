@@ -14,6 +14,8 @@
 // Copyright (c) 2005 Song Ho Ahn
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "ofApp.h"
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
