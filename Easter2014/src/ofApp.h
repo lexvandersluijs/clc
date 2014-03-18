@@ -9,6 +9,7 @@
 #include "ofxTimeline.h"
 #include "ofxGui.h"
 #include "ofxGlow.h"
+#include "ofxFastFboReader.h" // for getting the velocity vector field from the GPU
 
 #include "ParticleSystem/Particle.h"
 #include "ParticleSystem/ParticleManager.h"
@@ -19,7 +20,9 @@
 #include "ParticleSystem/SimulationAnimator.h"
 #include "KinectForProjection.h"
 #include "FluidEffect.h"
+#include "ParticleSystem/FluidSimulationAnimator.h"
 #include "ParticleEffect.h"
+
 
 class testApp : public ofBaseApp{
 public:

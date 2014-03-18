@@ -61,7 +61,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src;..\..\..\addons\ofxMSACore\src;..\..\..\addons\ofxMSAFluid\src;..\..\..\addons\ofxMSAPhysics\src;..\..\..\addons\ofxFastFboReader\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,7 +79,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src;..\..\..\addons\ofxFastFboReader\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +94,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\addons\ofxFastFboReader\src\ofxFastFboReader.h" />
     <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxBlend.h" />
     <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxClone.h" />
     <ClInclude Include="..\..\..\addons\ofxFX\src\composers\ofxMask.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="src\glInfo.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ParticleEffect.h" />
+    <ClInclude Include="src\ParticleSystem\FluidSimulationAnimator.h" />
     <ClInclude Include="src\ParticleSystem\ForceField.h" />
     <ClInclude Include="src\ParticleSystem\Particle.h" />
     <ClInclude Include="src\ParticleSystem\ParticleAnimator.h" />
@@ -154,6 +156,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\addons\ofxFastFboReader\src\ofxFastFboReader.cpp" />
     <ClCompile Include="..\..\..\addons\ofxFX\src\ofxFXObject.cpp" />
     <ClCompile Include="..\..\..\addons\ofxFluid\src\ofxFluid.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxBaseGui.cpp" />

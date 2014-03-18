@@ -10,9 +10,10 @@ void testApp::setup()
 	// note: we make the size of the simulation independent of the screen size, so that we can test
 	// everything in the right proportions and at the right resolution, even before we have the 
 	// triple-beamer, double-kinect setup..
-	fluidEffect.setup(2400, 600);
+	float screenToFluidScale = 0.25f;
+	fluidEffect.setup(2400, 600, screenToFluidScale);
 
-	particleEffect.setup(2400, 600);
+	particleEffect.setup(2400, 600, fluidEffect.getVelocityMap(), screenToFluidScale);
 
     //ofSetWindowShape(width, height);
 
@@ -80,7 +81,7 @@ void testApp::updateFromTimelineAndDraw()
 	//the value of changingRadius will be different depending on the timeline
 	float changingRadius = timeline.getValue("MyCircleRadius");
 	//use the value for something amazing!
-	ofCircle(mouseX, mouseY, changingRadius);
+	//ofCircle(mouseX, mouseY, changingRadius);
 	//don't forget to draw your timeline so you can edit it.
 	timeline.draw();
 }
@@ -93,7 +94,7 @@ void testApp::update()
     // Adding temporal Force
     //
     ofPoint m = ofPoint(mouseX,mouseY);
-    ofPoint d = (m - oldM)*10.0;
+    ofVec2f d = (m - oldM)*10.0;
     oldM = m;
     ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
     c.normalize();
@@ -146,7 +147,7 @@ void testApp::update()
     //
     fluidEffect.update();
     
-	particleEffect.update(ofVec2f(mouseX, mouseY));
+	particleEffect.update(ofVec2f(mouseX, mouseY), d);
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
@@ -165,9 +166,9 @@ void testApp::draw()
 	ofDisableBlendMode();
 
 	// ------------ Timeline -----------
-	updateFromTimelineAndDraw();
+	// updateFromTimelineAndDraw();
 
-	kinectForProjection[0]->kinect.getDepthTexture().draw(0, 0);
+	//kinectForProjection[0]->kinect.getDepthTexture().draw(0, 0);
 	//fluid.getVelocityTexture().draw(0, 0);
 
 	//blur << fluid.getVelocityTexture();

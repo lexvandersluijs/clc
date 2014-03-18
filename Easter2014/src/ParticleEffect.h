@@ -15,14 +15,18 @@ private:
 
 
 public:
-	void setup(int w, int h)
+	void setup(int w, int h, ofFloatPixels& velocityMap, float screenToFluidScale)
 	{
 		_prevTime = 0;
-		_particleManager = new ParticleManager(1000);
+		_particleManager = new ParticleManager(50000);
 		_particleGenerator = new ParticleGenerator(_particleManager);
-		SimulationAnimator* simAnim = new SimulationAnimator(_particleManager);
-		simAnim->AddForceField(new VortexForceField(ofVec2f(200.f, 200.f), 30.f));
-		_particleAnimator = simAnim;
+		_particleGenerator->SetGenerationRate(200);
+		_particleGenerator->SetParticleLifeTime(10.f);
+		//SimulationAnimator* simAnim = new SimulationAnimator(_particleManager);
+		//simAnim->AddForceField(new VortexForceField(ofVec2f(200.f, 200.f), 30.f));
+		//_particleAnimator = simAnim;
+		FluidSimulationAnimator* fluidSimAnim = new FluidSimulationAnimator(_particleManager, velocityMap, screenToFluidScale);
+		_particleAnimator = fluidSimAnim;
 		_particleRenderer = new ParticleRenderer(_particleManager);
 
 		width=w;
@@ -34,7 +38,7 @@ public:
 
    	}
 
-	void update(ofVec2f mousePos)
+	void update(ofVec2f mousePos, ofVec2f direction)
 	{
 		float currentTime = ofGetElapsedTimef();
 		float timeStep = currentTime - _prevTime;
@@ -42,7 +46,7 @@ public:
 		if(timeStep < 1.0f) // ignore timesteps that are too large
 		{
 			_particleManager->Update(timeStep);
-			_particleGenerator->Generate(timeStep, mousePos); // TODO: specify a position and velocity for the creation
+			_particleGenerator->Generate(timeStep, mousePos, direction); // TODO: specify a position and velocity for the creation
 			_particleAnimator->Update(currentTime, timeStep); // compute new properties (position, color, age, etc) all particles
 
 			glow.begin();
@@ -53,11 +57,13 @@ public:
 			ofSetColor(0, 0, 0, 255);
 			ofRectangle(0, 0, width, height);
 
+			//some shapes for testing our glow effect
 			//ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-			ofSetColor(255, 255, 255, 255);
-			for(int i=0; i<10; i++)
-				ofCircle(50*i, 300, 20.f);
+			// ofSetColor(255, 255, 255, 255);
+			//for(int i=0; i<10; i++)
+			//	ofCircle(50*i, 300, 20.f);
 
+			// and render our particles
 			_particleRenderer->Draw(4.f);
 
 			//ofDisableBlendMode();

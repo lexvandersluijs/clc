@@ -49,6 +49,9 @@
     <Filter Include="Source Files\ParticleSystem">
       <UniqueIdentifier>{538f2829-a75d-4302-9e53-280925547af0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxFastFboReader">
+      <UniqueIdentifier>{42ab3ee6-62bd-4f8e-8591-5b59dde2978b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -228,6 +231,12 @@
     <ClInclude Include="src\glInfo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxFastFboReader\src\ofxFastFboReader.h">
+      <Filter>addons\ofxFastFboReader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem\FluidSimulationAnimator.h">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -277,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="src\glInfo.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxFastFboReader\src\ofxFastFboReader.cpp">
+      <Filter>addons\ofxFastFboReader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

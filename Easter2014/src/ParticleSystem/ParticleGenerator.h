@@ -12,6 +12,8 @@ private:
 	float _generationRate; // particles / second
 	float _elapsedTime;
 	float _particleQuotaRemainder;
+
+	float _particleLifeTime;
 	
 public:
 	ParticleGenerator(ParticleManager* particleManager)
@@ -21,8 +23,18 @@ public:
 		_generationRate = 50;
 		_elapsedTime = 0;
 		_particleQuotaRemainder = 0;
+
+		_particleLifeTime = 1.f;
 	}
-	int Generate(float timeStep, ofVec2f pos)
+	void SetGenerationRate(float rate)
+	{
+		_generationRate = rate;
+	}
+	void SetParticleLifeTime(float lifeTime)
+	{
+		_particleLifeTime = lifeTime;
+	}
+	int Generate(float timeStep, ofVec2f pos, ofVec2f direction)
 	{
 		// add timeStep to elapsedtime 
 		// if the generationrate (particles/sec) multiplied by the elapsed time > 1 (nr of particles)
@@ -52,8 +64,8 @@ public:
 				// right now..  simply in the vicinity of the origig
 				Particle* particleArray = _particleManager->GetParticlesArray();
 				particleArray[particleIndex].Position = pos + ofVec2f(RandomCentered(5.f), RandomCentered(5.f));
-				particleArray[particleIndex].Speed = ofVec2f::zero();
-				particleArray[particleIndex].LifeTime = 3.0f;
+				particleArray[particleIndex].Speed = direction; //ofVec2f::zero();
+				particleArray[particleIndex].LifeTime = _particleLifeTime;
 				particleArray[particleIndex].Mass = 2.0f;
 				particleArray[particleIndex].Age = 0.0f;
 

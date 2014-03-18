@@ -1,7 +1,7 @@
 class FluidEffect
 {
 public:
-	void setup(int w, int h)
+	void setup(int w, int h, float screenToFluidScale)
 	{
 		width=w;
 		height=h;
@@ -11,16 +11,17 @@ public:
 		// note: we make the size of the simulation independent of the screen size, so that we can test
 		// everything in the right proportions and at the right resolution, even before we have the 
 		// triple-beamer, double-kinect setup..
-		fluid.allocate(width, height, 0.2); 
+		fluid.allocate(width, height, screenToFluidScale); 
     
-		_velocityMap.allocate(fluid.getVelocityTexture().getWidth(), fluid.getVelocityTexture().getHeight(), 4);
+		_velocityMap.allocate(fluid.getVelocityFbo().getWidth(), fluid.getVelocityFbo().getHeight(), ofImageType::OF_IMAGE_COLOR);
+		_fboReader.setAsync(true);
 
 		// Seting the gravity set up & injecting the background image
 		//
 		fluid.dissipation = 0.99;
 		fluid.velocityDissipation = 0.99;
     
-		fluid.setGravity(ofVec2f(0.0,-0.098));
+		fluid.setGravity(ofVec2f(0.0,-0.005));
 	//    fluid.setGravity(ofVec2f(0.0,0.0098));
     
 		//  Set obstacle
@@ -42,7 +43,10 @@ public:
 		fluid.update();
 
 		// SLOOOOW, framerate drops to 30 fps, from 60 (without Kinect attached)
-		//fluid.getVelocityTexture().readToPixels(_velocityMap);
+		//fluid.getVelocityFbo().readToPixels(_velocityMap);
+
+		// instead, get contents from buffer asynchronously without stalling everything
+		_fboReader.readToFloatPixels(fluid.getVelocityFbo(), _velocityMap, OF_IMAGE_COLOR);
 	}
 	void draw(int x, int y, float width, float height)
 	{
@@ -69,10 +73,12 @@ public:
 	{
 		return fluid;
 	}
+	ofFloatPixels& getVelocityMap() { return _velocityMap; }
 
 private:
     ofxFluid fluid;
 	ofFloatPixels _velocityMap;
+	ofxFastFboReader _fboReader;
 
 	int     width,height;
     bool    bPaint, bObstacle, bBounding, bClear;
