@@ -13,8 +13,13 @@ namespace ParticleSystem
 
 			MAX_POINTS = 100000;
 			_linePoints = new ofVec3f[MAX_POINTS];
+			_colorArray = new float[MAX_POINTS * 3 * 2]; // 3 components per color, 2 colors per line
 		}
-
+		~ParticleRenderer()
+		{
+			delete [] _linePoints;
+			delete [] _colorArray;
+		}
 		void SetRenderMode(ParticleRenderMode renderMode)
 		{
 		}
@@ -82,31 +87,52 @@ namespace ParticleSystem
 			{
 				ofVec2f delta = particlesArray[i].Speed;
 				float length = delta.length();
+				int startIdx = i*2;
+				int endIdx = startIdx+1;
 
 				// limit length to 10 pix
-				if(length > 10.f)
+				if(length > 5.f)
 				{
-					delta *= 10.f/length;
+					delta *= 5.f/length;
 				}
 
-				_linePoints[i*2].x = particlesArray[i].Position.x;
-				_linePoints[i*2].y = particlesArray[i].Position.y;
-				_linePoints[i*2].z = 0.f;
+				_linePoints[startIdx].x = particlesArray[i].Position.x;
+				_linePoints[startIdx].y = particlesArray[i].Position.y;
+				_linePoints[startIdx].z = 0.f;
 
-				_linePoints[i*2+1].x = particlesArray[i].Position.x + delta.x;
-				_linePoints[i*2+1].y = particlesArray[i].Position.y + delta.y;
-				_linePoints[i*2+1].z = 0.f;
+				_linePoints[endIdx].x = particlesArray[i].Position.x + delta.x;
+				_linePoints[endIdx].y = particlesArray[i].Position.y + delta.y;
+				_linePoints[endIdx].z = 0.f;
+
+				int startIdxColor = i*3*2;
+				int endIdxColor = startIdxColor+1;
+
+				// brightness decreases linearly with age..
+				float factor = 1.0f - particlesArray[i].Age/particlesArray[i].LifeTime;
+				_colorArray[startIdxColor  ] = factor;
+				_colorArray[startIdxColor+1] = factor;
+				_colorArray[startIdxColor+2] = factor;
+				_colorArray[startIdxColor+3] = factor;
+				_colorArray[startIdxColor+4] = factor;
+				_colorArray[startIdxColor+5] = factor;
 			}
 
 			// use smoothness, if requested:
-			//if (bSmoothHinted) startSmoothing();
+			ofEnableSmoothing();
+
+			glEnableClientState(GL_COLOR_ARRAY);
+			glColorPointer(3, GL_FLOAT, 0, _colorArray);
 
 			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &_linePoints[0].x);
+			glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), _linePoints);
+
 			glDrawArrays(GL_LINES, 0, nrOfActiveParticles*2);
 
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
+
 			// use smoothness, if requested:
-			//if (bSmoothHinted) endSmoothing();
+			ofDisableSmoothing();
 		}
 
 
@@ -120,6 +146,7 @@ namespace ParticleSystem
 		ParticleManager* _particleManager;
 
 		ofVec3f* _linePoints;
+		float* _colorArray;
 		int MAX_POINTS;
 	};
 };

@@ -3,6 +3,9 @@
 //--------------------------------------------------------------
 void testApp::setup()
 {
+	presentationWidth = 2400;
+	presentationHeight = 600;
+
 	// ------------------------ init fluid simulation -----------------------
     ofEnableAlphaBlending();
     ofSetCircleResolution(100);
@@ -11,9 +14,9 @@ void testApp::setup()
 	// everything in the right proportions and at the right resolution, even before we have the 
 	// triple-beamer, double-kinect setup..
 	float screenToFluidScale = 0.25f;
-	fluidEffect.setup(2400, 600, screenToFluidScale);
+	fluidEffect.setup(presentationWidth, presentationHeight, screenToFluidScale);
 
-	particleEffect.setup(2400, 600, fluidEffect.getVelocityMap(), screenToFluidScale);
+	particleEffect.setup(presentationWidth, presentationHeight, fluidEffect.getVelocityMap(), screenToFluidScale);
 
     //ofSetWindowShape(width, height);
 
@@ -37,10 +40,12 @@ void testApp::setup()
 
 	//add a tracks, etc
 	timeline.addCurves("MyCircleRadius", ofRange(0, 200));
+	timeline.addFlags("Events");
+	ofAddListener(timeline.events().bangFired, this, &testApp::receivedBang);
 	timeline.play();
 
 	// ------------------ intialize GUI -------------------
-	gui.setup(); // most of the time you don't need a name
+	gui.setup("Settings", "settings.xml", 10.f, ofGetWindowHeight()-500.f); 
 	gui.setDefaultWidth(400);
 
 	// set up parameters for Kinect 0
@@ -87,6 +92,23 @@ void testApp::updateFromTimelineAndDraw()
 }
 
 //--------------------------------------------------------------
+
+void testApp::receivedBang(ofxTLBangEventArgs& bang)
+{
+  ofLogNotice("Bang fired from track " + bang.track->getName());
+  if(bang.track->getName() == "Events")
+  {
+	  if(bang.flag == "F_A")
+	  {
+		  fluidEffect.setConstantForcesPattern(0);
+	  }
+	  if(bang.flag == "F_B")
+	  {
+		  fluidEffect.setConstantForcesPattern(1);
+	  }
+  }
+}
+
 void testApp::update()
 {
     updateKinectInput();
@@ -158,17 +180,17 @@ void testApp::draw()
     ofBackgroundGradient(ofColor::gray, ofColor::black, OF_GRADIENT_LINEAR);
     
 	// ------ fluid sim ----------------
-    fluidEffect.draw(0, 0, 2400, 600);
+    fluidEffect.draw(0, 0, presentationWidth, presentationHeight);
 
 	// --------- particles -------------
 	ofEnableBlendMode(OF_BLENDMODE_ADD);
-	particleEffect.draw(0, 0, 2400, 600);
+	particleEffect.draw(0, 0, presentationWidth, presentationHeight);
 	ofDisableBlendMode();
 
-	// ------------ Timeline -----------
-	// updateFromTimelineAndDraw();
+	ofSetLineWidth(1.0f);
 
 	//kinectForProjection[0]->kinect.getDepthTexture().draw(0, 0);
+
 	//fluid.getVelocityTexture().draw(0, 0);
 
 	//blur << fluid.getVelocityTexture();
@@ -188,6 +210,9 @@ void testApp::draw()
 
 	// ---------------- GUI -----------------
 	gui.draw();
+
+	// ------------ Timeline -----------
+	updateFromTimelineAndDraw();
 }
 
 
@@ -195,6 +220,8 @@ void testApp::exit()
 {
 	delete kinectForProjection[0];
 	//delete kinectForProjection[1];
+
+	particleEffect.exit();
 }
 
 //--------------------------------------------------------------

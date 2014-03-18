@@ -20,8 +20,8 @@ public:
 		_prevTime = 0;
 		_particleManager = new ParticleManager(50000);
 		_particleGenerator = new ParticleGenerator(_particleManager);
-		_particleGenerator->SetGenerationRate(200);
-		_particleGenerator->SetParticleLifeTime(10.f);
+		_particleGenerator->SetGenerationRate(1000);
+		_particleGenerator->SetParticleLifeTime(3.f);
 		//SimulationAnimator* simAnim = new SimulationAnimator(_particleManager);
 		//simAnim->AddForceField(new VortexForceField(ofVec2f(200.f, 200.f), 30.f));
 		//_particleAnimator = simAnim;
@@ -37,6 +37,14 @@ public:
 		glow.setPasses(2);
 
    	}
+
+	void exit()
+	{
+		delete _particleRenderer;
+		delete _particleAnimator;
+		delete _particleGenerator;
+		delete _particleManager;
+	}
 
 	void update(ofVec2f mousePos, ofVec2f direction)
 	{
@@ -80,7 +88,7 @@ public:
 		glow.draw_dontEnableAlphaBlending(x, y, width, height);
 
 		// draw the lines themselves
-		_particleRenderer->Draw(1.f);
+		_particleRenderer->Draw(0.5f);
 	}
 
 	int getWidth() { return width; }

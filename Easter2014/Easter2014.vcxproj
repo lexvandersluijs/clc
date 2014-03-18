@@ -79,7 +79,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src;..\..\..\addons\ofxFastFboReader\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxFX\src\operations;..\..\..\addons\ofxFX\src\generative;..\..\..\addons\ofxFX\src\filters;..\..\..\addons\ofxFX\src\composers;..\..\..\addons\ofxFX\src;..\..\..\addons\ofxFluid\src;..\example\src;..\src;..\..\..\addons\ofxKinectCommonBridge\src;..\..\..\addons\ofxGUi\src;..\..\..\addons\ofxFastFboReader\src;..\..\..\addons\ofxMSAFluid\src;..\..\..\addons\ofxMSACore\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +140,16 @@
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACore-OF.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACore.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreCommon.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreMath.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluid.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerBase.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerGl-OF.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidParticleUpdater.h" />
+    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.h" />
     <ClInclude Include="src\FluidEffect.h" />
     <ClInclude Include="src\glInfo.h" />
     <ClInclude Include="src\ofApp.h" />
@@ -168,6 +178,9 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerBase.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.cpp" />
     <ClCompile Include="src\glInfo.cpp" />
     <ClCompile Include="src\KinectForProjection.cpp" />
     <ClCompile Include="src\main.cpp" />

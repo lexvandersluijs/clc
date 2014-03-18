@@ -60,19 +60,17 @@ public:
 	ofxFloatSlider toPresentationSpaceFocalLength0;
 	ofxFloatSlider toPresentationSpacePrincipalX0;
 	ofxFloatSlider toPresentationSpacePrincipalY0;
-	//ofxColorSlider color;
-	//ofxVec2Slider center;
-	//ofxIntSlider circleResolution;
-	//ofxToggle filled;
-	//ofxButton twoCircles;
-	//ofxButton ringButton;
-	//ofxLabel screenSize;
-
 
 	// Visual effects
 	ofxGaussianBlur		blur;
 
+	// event handler for catching events from 'Flags' timeline
+	void receivedBang(ofxTLBangEventArgs& bang);
+
 private:
+	int presentationWidth;
+	int presentationHeight;
+
 	void updateKinectInput();
 	void updateFromTimelineAndDraw();
 };
