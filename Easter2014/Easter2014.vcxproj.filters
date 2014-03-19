@@ -338,5 +338,8 @@
     <ClCompile Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.cpp">
       <Filter>addons\ofxMSACore</Filter>
     </ClCompile>
+    <ClCompile Include="src\fluidEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -182,6 +182,7 @@
     <ClCompile Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.cpp" />
     <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerBase.cpp" />
     <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.cpp" />
+    <ClCompile Include="src\fluidEffect.cpp" />
     <ClCompile Include="src\glInfo.cpp" />
     <ClCompile Include="src\KinectForProjection.cpp" />
     <ClCompile Include="src\main.cpp" />

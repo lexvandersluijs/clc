@@ -15,14 +15,6 @@ void testApp::setup()
     ofEnableAlphaBlending();
     ofSetCircleResolution(100);
 
-	// note: we make the size of the simulation independent of the screen size, so that we can test
-	// everything in the right proportions and at the right resolution, even before we have the 
-	// triple-beamer, double-kinect setup..
-	float screenToFluidScale = 0.25f;
-	fluidEffect.setup(presentationWidth, presentationHeight, screenToFluidScale);
-
-	particleEffect.setup(presentationWidth, presentationHeight, fluidEffect.getVelocityMap(), screenToFluidScale);
-
     //ofSetWindowShape(width, height);
 
 	// -------------- initialize Kinect(s) --------------
@@ -51,8 +43,15 @@ void testApp::setup()
 
 	// TODO: same for Kinect 1
 
-	// register event listeners
-	ofAddListener(appSettings::instance().timeline.events().bangFired, this, &testApp::receivedBang);
+
+	// note: we make the size of the simulation independent of the screen size, so that we can test
+	// everything in the right proportions and at the right resolution, even before we have the 
+	// triple-beamer, double-kinect setup..
+	float screenToFluidScale = 0.25f;
+	fluidEffect.setup(presentationWidth, presentationHeight, screenToFluidScale);
+
+	particleEffect.setup(presentationWidth, presentationHeight, fluidEffect.getVelocityMap(), screenToFluidScale);
+
 
 	// finally, start playing the timeline
 	appSettings::instance().timeline.play();
@@ -93,21 +92,6 @@ void testApp::updateFromSettings()
 
 //--------------------------------------------------------------
 
-void testApp::receivedBang(ofxTLBangEventArgs& bang)
-{
-  ofLogNotice("Bang fired from track " + bang.track->getName());
-  if(bang.track->getName() == "Events")
-  {
-	  if(bang.flag == "F_A")
-	  {
-		  fluidEffect.setConstantForcesPattern(0);
-	  }
-	  if(bang.flag == "F_B")
-	  {
-		  fluidEffect.setConstantForcesPattern(1);
-	  }
-  }
-}
 
 void testApp::update()
 {

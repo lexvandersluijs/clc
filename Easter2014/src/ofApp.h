@@ -64,8 +64,6 @@ public:
 	// Visual effects
 	ofxGaussianBlur		blur;
 
-	// event handler for catching events from 'Flags' timeline
-	void receivedBang(ofxTLBangEventArgs& bang);
 
 private:
 	int presentationWidth;
