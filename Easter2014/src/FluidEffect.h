@@ -6,6 +6,7 @@ public:
 		width=w;
 		height=h;
 
+
 	   // Initial Allocation
 		//
 		// note: we make the size of the simulation independent of the screen size, so that we can test

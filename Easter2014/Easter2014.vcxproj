@@ -150,6 +150,7 @@
     <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerGl-OF.h" />
     <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidParticleUpdater.h" />
     <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.h" />
+    <ClInclude Include="src\appSettings.h" />
     <ClInclude Include="src\FluidEffect.h" />
     <ClInclude Include="src\glInfo.h" />
     <ClInclude Include="src\ofApp.h" />

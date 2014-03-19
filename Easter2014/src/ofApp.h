@@ -11,6 +11,8 @@
 #include "ofxGlow.h"
 #include "ofxFastFboReader.h" // for getting the velocity vector field from the GPU
 
+#include "appSettings.h"
+
 #include "ParticleSystem/Particle.h"
 #include "ParticleSystem/ParticleManager.h"
 #include "ParticleSystem/ParticleGenerator.h"
@@ -26,6 +28,10 @@
 
 class testApp : public ofBaseApp{
 public:
+	testApp()
+	{
+	}
+
     void setup();
     void update();
     void draw();
@@ -47,19 +53,13 @@ public:
 
     ofVec2f oldM;
 
+
 	// Kinect
 	int nrOfKinects;
 	KinectForProjection* kinectForProjection[2];
 
-	// Control
-	ofxTimeline timeline;
+	appSettings settings;
 
-	ofxPanel gui;
-	ofxFloatSlider kinectVerticalOffset0;
-	ofxFloatSlider kinectForwardOffset0;
-	ofxFloatSlider toPresentationSpaceFocalLength0;
-	ofxFloatSlider toPresentationSpacePrincipalX0;
-	ofxFloatSlider toPresentationSpacePrincipalY0;
 
 	// Visual effects
 	ofxGaussianBlur		blur;
@@ -71,6 +71,8 @@ private:
 	int presentationWidth;
 	int presentationHeight;
 
+	bool showGUI;
+
 	void updateKinectInput();
-	void updateFromTimelineAndDraw();
+	void updateFromSettings();
 };

@@ -273,6 +273,9 @@
     <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACore-OF.h">
       <Filter>addons\ofxMSACore</Filter>
     </ClInclude>
+    <ClInclude Include="src\appSettings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -54,7 +54,10 @@ public:
 		if(timeStep < 1.0f) // ignore timesteps that are too large
 		{
 			_particleManager->Update(timeStep);
-			_particleGenerator->Generate(timeStep, mousePos, direction); // TODO: specify a position and velocity for the creation
+
+			if(!appSettings::instance().speedBasedGeneration || direction.length() > 4.0f)
+				_particleGenerator->Generate(timeStep, mousePos, direction); // TODO: specify a position and velocity for the creation
+
 			_particleAnimator->Update(currentTime, timeStep); // compute new properties (position, color, age, etc) all particles
 
 			glow.begin();

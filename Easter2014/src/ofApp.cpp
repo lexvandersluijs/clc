@@ -1,10 +1,15 @@
 #include "ofApp.h"
 
+// we need to declare this static variable in a CPP file (C# is better with this..)
+appSettings* appSettings::inst;
+
 //--------------------------------------------------------------
 void testApp::setup()
 {
 	presentationWidth = 2400;
 	presentationHeight = 600;
+
+	showGUI = false;
 
 	// ------------------------ init fluid simulation -----------------------
     ofEnableAlphaBlending();
@@ -33,30 +38,24 @@ void testApp::setup()
 	//kinectForProjection[1] = new KinectForProjection();
 	//kinectForProjection[1].setup(1);
 
-	// ---------------- initialize timeline --------------
-	timeline.setup(); //registers events
-	timeline.setDurationInSeconds(10); //sets time
-	timeline.setLoopType(OF_LOOP_NORMAL); //turns the timeline to loop
+	// ---------------- initialize base settings object --------------
+	appSettings::instance().setup();
 
-	//add a tracks, etc
-	timeline.addCurves("MyCircleRadius", ofRange(0, 200));
-	timeline.addFlags("Events");
-	ofAddListener(timeline.events().bangFired, this, &testApp::receivedBang);
-	timeline.play();
-
-	// ------------------ intialize GUI -------------------
-	gui.setup("Settings", "settings.xml", 10.f, ofGetWindowHeight()-500.f); 
-	gui.setDefaultWidth(400);
 
 	// set up parameters for Kinect 0
-	gui.add(kinectVerticalOffset0.setup( "kinect 0 vertical offset", kinectForProjection[0]->kinectOffsetFromProjector.y, -300, 300, 400 ));
-	gui.add(kinectForwardOffset0.setup( "kinect 0 forward offset", kinectForProjection[0]->kinectOffsetFromProjector.z, 100, 400, 400 ));
-	gui.add(toPresentationSpaceFocalLength0.setup( "pres 0 FL", kinectForProjection[0]->toPresentationSpaceFocalLength, 300, 1000, 400 ));
-	gui.add(toPresentationSpacePrincipalX0.setup( "pres 0 PP X", kinectForProjection[0]->toPresentationSpacePrincipalPoint.x, -800, 2400, 400 ));
-	gui.add(toPresentationSpacePrincipalY0.setup( "pres 0 PP Y", kinectForProjection[0]->toPresentationSpacePrincipalPoint.y, -600, 600, 400 ));
+	appSettings::instance().gui.add(appSettings::instance().kinectVerticalOffset0.setup( "kinect 0 vertical offset", kinectForProjection[0]->kinectOffsetFromProjector.y, -300, 300, 400 ));
+	appSettings::instance().gui.add(appSettings::instance().kinectForwardOffset0.setup( "kinect 0 forward offset", kinectForProjection[0]->kinectOffsetFromProjector.z, 100, 400, 400 ));
+	appSettings::instance().gui.add(appSettings::instance().toPresentationSpaceFocalLength0.setup( "pres 0 FL", kinectForProjection[0]->toPresentationSpaceFocalLength, 300, 1000, 400 ));
+	appSettings::instance().gui.add(appSettings::instance().toPresentationSpacePrincipalX0.setup( "pres 0 PP X", kinectForProjection[0]->toPresentationSpacePrincipalPoint.x, -800, 2400, 400 ));
+	appSettings::instance().gui.add(appSettings::instance().toPresentationSpacePrincipalY0.setup( "pres 0 PP Y", kinectForProjection[0]->toPresentationSpacePrincipalPoint.y, -600, 600, 400 ));
 
 	// TODO: same for Kinect 1
 
+	// register event listeners
+	ofAddListener(appSettings::instance().timeline.events().bangFired, this, &testApp::receivedBang);
+
+	// finally, start playing the timeline
+	appSettings::instance().timeline.play();
 
 	// ------------------ initialize visual effects -------
 	blur.passes = 2;
@@ -68,11 +67,11 @@ void testApp::updateKinectInput()
 	for(int i=0; i<nrOfKinects; i++)
 	{
 		// get values from GUI for Kinect
-		kinectForProjection[i]->kinectOffsetFromProjector.y = kinectVerticalOffset0;
-		kinectForProjection[i]->kinectOffsetFromProjector.z = kinectForwardOffset0;
-		kinectForProjection[i]->toPresentationSpaceFocalLength = toPresentationSpaceFocalLength0;
-		kinectForProjection[i]->toPresentationSpacePrincipalPoint.x = toPresentationSpacePrincipalX0;
-		kinectForProjection[i]->toPresentationSpacePrincipalPoint.y = toPresentationSpacePrincipalY0;
+		kinectForProjection[i]->kinectOffsetFromProjector.y = appSettings::instance().kinectVerticalOffset0;
+		kinectForProjection[i]->kinectOffsetFromProjector.z = appSettings::instance().kinectForwardOffset0;
+		kinectForProjection[i]->toPresentationSpaceFocalLength = appSettings::instance().toPresentationSpaceFocalLength0;
+		kinectForProjection[i]->toPresentationSpacePrincipalPoint.x = appSettings::instance().toPresentationSpacePrincipalX0;
+		kinectForProjection[i]->toPresentationSpacePrincipalPoint.y = appSettings::instance().toPresentationSpacePrincipalY0;
 
 		// TODO: same for Kinect 1
 
@@ -81,14 +80,15 @@ void testApp::updateKinectInput()
 	}
 }
 
-void testApp::updateFromTimelineAndDraw()
+void testApp::updateFromSettings()
 {
+	appSettings::instance().update();
+
 	//the value of changingRadius will be different depending on the timeline
-	float changingRadius = timeline.getValue("MyCircleRadius");
+	float changingRadius = appSettings::instance().timeline.getValue("MyCircleRadius");
 	//use the value for something amazing!
 	//ofCircle(mouseX, mouseY, changingRadius);
-	//don't forget to draw your timeline so you can edit it.
-	timeline.draw();
+
 }
 
 //--------------------------------------------------------------
@@ -112,6 +112,7 @@ void testApp::receivedBang(ofxTLBangEventArgs& bang)
 void testApp::update()
 {
     updateKinectInput();
+	updateFromSettings();
 
     // Adding temporal Force
     //
@@ -120,7 +121,11 @@ void testApp::update()
     oldM = m;
     ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
     c.normalize();
-	fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+
+	// if not speed-based then we always want to add a force, independent of movement. Otherwise
+	// we require a minimum movement distance
+	if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
+		fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
 
 	// get the inputs from all Kinects and insert the relevant forces into the fluid simulation
 	for(int i=0; i<nrOfKinects; i++)
@@ -209,10 +214,11 @@ void testApp::draw()
 	}
 
 	// ---------------- GUI -----------------
-	gui.draw();
-
-	// ------------ Timeline -----------
-	updateFromTimelineAndDraw();
+	if(showGUI)
+	{
+		appSettings::instance().draw();
+		
+	}
 }
 
 
@@ -228,6 +234,11 @@ void testApp::exit()
 void testApp::keyPressed(int key)
 {
 	fluidEffect.keyPressed(key);
+
+	if(key == ' ')
+	{
+		showGUI = !showGUI;
+	}
 }
 
 //--------------------------------------------------------------
