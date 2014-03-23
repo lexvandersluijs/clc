@@ -39,7 +39,7 @@ public:
 		timeline.addFlags("Events");
 
 		// ------------------ intialize GUI -------------------
-		gui.setup("Settings", "settings.xml", 10.f, ofGetWindowHeight()-500.f); 
+		gui.setup("Settings", "settings.xml", 10.f, 400.f); 
 		gui.setDefaultWidth(400);
 
 		gui.add(speedBasedGeneration.setup("Speed based generation", true));
@@ -57,10 +57,6 @@ public:
 
 	ofxPanel gui;
 	ofxToggle	   speedBasedGeneration;
-	ofxFloatSlider kinectVerticalOffset0;
-	ofxFloatSlider kinectForwardOffset0;
-	ofxFloatSlider toPresentationSpaceFocalLength0;
-	ofxFloatSlider toPresentationSpacePrincipalX0;
-	ofxFloatSlider toPresentationSpacePrincipalY0;
+
 
 };

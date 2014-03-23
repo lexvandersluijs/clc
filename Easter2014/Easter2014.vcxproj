@@ -153,6 +153,7 @@
     <ClInclude Include="src\appSettings.h" />
     <ClInclude Include="src\FluidEffect.h" />
     <ClInclude Include="src\glInfo.h" />
+    <ClInclude Include="src\KinectForProjection.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ParticleEffect.h" />
     <ClInclude Include="src\ParticleSystem\FluidSimulationAnimator.h" />

@@ -4,10 +4,34 @@
 appSettings* appSettings::inst;
 
 //--------------------------------------------------------------
+
+void testApp::removeWindowBorder()
+{
+	bool showWindowBorder = false;
+	if (!showWindowBorder) {
+	  HWND m_hWnd = WindowFromDC(wglGetCurrentDC());
+	  long style = ::GetWindowLong(m_hWnd, GWL_STYLE);
+	  style &= ~WS_DLGFRAME;
+	  style &= ~WS_CAPTION;
+	  style &= ~WS_BORDER;
+	  style &= WS_POPUP;
+	  //_originalWindowStyle = style;
+	  ::SetWindowLong(m_hWnd, GWL_STYLE, style);
+
+	  long exstyle = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
+	  exstyle &= ~WS_EX_DLGMODALFRAME;
+	  //_originalWindowStyleEx = exstyle;
+	  ::SetWindowLong(m_hWnd, GWL_EXSTYLE, exstyle);
+
+	  SetWindowPos(m_hWnd, HWND_TOPMOST, 1920,0,0,0, SWP_NOSIZE);
+	}
+}
 void testApp::setup()
 {
-	presentationWidth = 2400;
-	presentationHeight = 600;
+	presentationWidth = 1280; //2400;
+	presentationHeight = 320; //600;
+
+	//removeWindowBorder();
 
 	showGUI = false;
 
@@ -23,8 +47,8 @@ void testApp::setup()
 	kinectForProjection[0]->kinectOffsetFromProjector.x = 0;
 	kinectForProjection[0]->kinectOffsetFromProjector.y = -300; // cm
 	kinectForProjection[0]->kinectOffsetFromProjector.z = 300; // assuming z points forward
-	kinectForProjection[0]->toPresentationSpacePrincipalPoint.x = 800 / 2;
-	kinectForProjection[0]->toPresentationSpacePrincipalPoint.y = 600 / 2;
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.x = (presentationWidth/3) / 2;
+	kinectForProjection[0]->toPresentationSpacePrincipalPoint.y = presentationHeight / 2;
 	kinectForProjection[0]->toPresentationSpaceFocalLength = 400; // pixels
 	kinectForProjection[0]->setup(0);
 	//kinectForProjection[1] = new KinectForProjection();
@@ -35,19 +59,15 @@ void testApp::setup()
 
 
 	// set up parameters for Kinect 0
-	appSettings::instance().gui.add(appSettings::instance().kinectVerticalOffset0.setup( "kinect 0 vertical offset", kinectForProjection[0]->kinectOffsetFromProjector.y, -300, 300, 400 ));
-	appSettings::instance().gui.add(appSettings::instance().kinectForwardOffset0.setup( "kinect 0 forward offset", kinectForProjection[0]->kinectOffsetFromProjector.z, 100, 400, 400 ));
-	appSettings::instance().gui.add(appSettings::instance().toPresentationSpaceFocalLength0.setup( "pres 0 FL", kinectForProjection[0]->toPresentationSpaceFocalLength, 300, 1000, 400 ));
-	appSettings::instance().gui.add(appSettings::instance().toPresentationSpacePrincipalX0.setup( "pres 0 PP X", kinectForProjection[0]->toPresentationSpacePrincipalPoint.x, -800, 2400, 400 ));
-	appSettings::instance().gui.add(appSettings::instance().toPresentationSpacePrincipalY0.setup( "pres 0 PP Y", kinectForProjection[0]->toPresentationSpacePrincipalPoint.y, -600, 600, 400 ));
+	for(int i=0; i<nrOfKinects; i++)
+		kinectForProjection[i]->setupGUI();
 
-	// TODO: same for Kinect 1
 
 
 	// note: we make the size of the simulation independent of the screen size, so that we can test
 	// everything in the right proportions and at the right resolution, even before we have the 
 	// triple-beamer, double-kinect setup..
-	float screenToFluidScale = 0.25f;
+	float screenToFluidScale = 0.4f;
 	fluidEffect.setup(presentationWidth, presentationHeight, screenToFluidScale);
 
 	particleEffect.setup(presentationWidth, presentationHeight, fluidEffect.getVelocityMap(), screenToFluidScale);
@@ -66,16 +86,10 @@ void testApp::updateKinectInput()
 	for(int i=0; i<nrOfKinects; i++)
 	{
 		// get values from GUI for Kinect
-		kinectForProjection[i]->kinectOffsetFromProjector.y = appSettings::instance().kinectVerticalOffset0;
-		kinectForProjection[i]->kinectOffsetFromProjector.z = appSettings::instance().kinectForwardOffset0;
-		kinectForProjection[i]->toPresentationSpaceFocalLength = appSettings::instance().toPresentationSpaceFocalLength0;
-		kinectForProjection[i]->toPresentationSpacePrincipalPoint.x = appSettings::instance().toPresentationSpacePrincipalX0;
-		kinectForProjection[i]->toPresentationSpacePrincipalPoint.y = appSettings::instance().toPresentationSpacePrincipalY0;
+		kinectForProjection[i]->updateFromGUI();
 
-		// TODO: same for Kinect 1
-
+		// get input from tracking and project to presentation (pixel) space
 		kinectForProjection[i]->update();
-		//kinectForProjection[1].update();
 	}
 }
 
@@ -166,8 +180,14 @@ void testApp::update()
 //--------------------------------------------------------------
 void testApp::draw()
 {
-    ofBackgroundGradient(ofColor::gray, ofColor::black, OF_GRADIENT_LINEAR);
-    
+	//ofBackgroundGradient(ofColor::darkGray, ofColor::black, OF_GRADIENT_LINEAR);
+	ofBackground(ofColor::black);
+
+	// ---------------- horizontal line ------------------
+	ofSetLineWidth(1.0f);
+	ofSetColor(255);
+	ofLine(0.f, presentationHeight+1, presentationWidth, presentationHeight+1);
+
 	// ------ fluid sim ----------------
     fluidEffect.draw(0, 0, presentationWidth, presentationHeight);
 
@@ -178,7 +198,6 @@ void testApp::draw()
 
 	ofSetLineWidth(1.0f);
 
-	//kinectForProjection[0]->kinect.getDepthTexture().draw(0, 0);
 
 	//fluid.getVelocityTexture().draw(0, 0);
 
@@ -188,20 +207,27 @@ void testApp::draw()
 	// stretch blurred bitmap while rendering
 	//blur.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 
-	// ------------- inputs from Kinect(s) -------------
-	for(int i=0; i<nrOfKinects; i++)
-	{
-		ofSetColor(255, 255, 0);
-		ofCircle(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(), 10.f);
-		ofSetColor(255, 0, 255);
-		ofCircle(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(), 10.f);
-	}
 
 	// ---------------- GUI -----------------
 	if(showGUI)
 	{
 		appSettings::instance().draw();
-		
+
+		float kinectDepthStartX = 500;
+		float kinectDepthStartY = 400;
+
+		// ------------- show circles and depth images to debug inputs from Kinect(s) -------------
+		for(int i=0; i<nrOfKinects; i++)
+		{
+			ofSetColor(255, 255, 0);
+			ofCircle(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(), 10.f);
+			ofSetColor(255, 0, 255);
+			ofCircle(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(), 10.f);
+
+
+			kinectForProjection[i]->kinect.getDepthTexture().draw(kinectDepthStartX + float(i)*320.0f, kinectDepthStartY);
+		}
+
 	}
 }
 

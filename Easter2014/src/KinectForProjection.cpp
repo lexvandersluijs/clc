@@ -2,7 +2,9 @@
 
 void KinectForProjection::setup(int index)
 {
-	kinect.initSensor( index );
+	_index = index;
+
+	kinect.initSensor( _index );
 	
 	kinect.initColorStream(640, 480);
 	kinect.initDepthStream(320, 240, true);
@@ -15,6 +17,40 @@ void KinectForProjection::setup(int index)
 
 	hasSkeleton = false;
 	jointDistance = 1.f;
+}
+
+void KinectForProjection::setupGUI()
+{
+	stringstream nameSS = stringstream();
+	nameSS << "kinect " << _index << " vertical offset";
+	appSettings::instance().gui.add(kinectVerticalOffset.setup( nameSS.str(), kinectOffsetFromProjector.y, -300, 300, 400 ));
+
+	nameSS = stringstream();
+	nameSS << "kinect " << _index << " forward offset";
+	appSettings::instance().gui.add(kinectForwardOffset.setup( nameSS.str(), kinectOffsetFromProjector.z, 100, 400, 400 ));
+
+	nameSS = stringstream();
+	nameSS << "pres " << _index << " FL";
+	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 1000, 400 ));
+
+	nameSS = stringstream();
+	nameSS << "pres " << _index << " PP X";
+	appSettings::instance().gui.add(toPresentationSpacePrincipalX.setup( nameSS.str(), toPresentationSpacePrincipalPoint.x, -800, 2400, 400 ));
+
+	nameSS = stringstream();
+	nameSS << "pres " << _index << " PP Y";
+	appSettings::instance().gui.add(toPresentationSpacePrincipalY.setup( nameSS.str(), toPresentationSpacePrincipalPoint.y, -600, 600, 400 ));
+
+}
+
+void KinectForProjection::updateFromGUI()
+{
+	kinectOffsetFromProjector.y = kinectVerticalOffset;
+	kinectOffsetFromProjector.z = kinectForwardOffset;
+	toPresentationSpaceFocalLength = toPresentationSpaceFocalLengthSlider;
+	toPresentationSpacePrincipalPoint.x = toPresentationSpacePrincipalX;
+	toPresentationSpacePrincipalPoint.y = toPresentationSpacePrincipalY;
+
 }
 
 void KinectForProjection::update()

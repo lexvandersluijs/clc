@@ -276,6 +276,9 @@
     <ClInclude Include="src\appSettings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\KinectForProjection.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

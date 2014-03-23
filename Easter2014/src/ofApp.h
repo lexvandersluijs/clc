@@ -32,6 +32,7 @@ public:
 	{
 	}
 
+	void removeWindowBorder();
     void setup();
     void update();
     void draw();
