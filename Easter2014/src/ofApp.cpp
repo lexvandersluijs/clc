@@ -35,7 +35,10 @@ void testApp::setup()
 
 	//removeWindowBorder();
 
-	showGUI = false;
+	_presentationOffset.x = 100.f;
+	_presentationOffset.y = 100.f;
+
+	showGUI = true;
 
 	// ------------------------ init fluid simulation -----------------------
     ofEnableAlphaBlending();
@@ -59,11 +62,12 @@ void testApp::setup()
 	// ---------------- initialize base settings object --------------
 	appSettings::instance().setup();
 
-
 	// set up parameters for Kinect 0
 	for(int i=0; i<nrOfKinects; i++)
 		kinectForProjection[i]->setupGUI();
 
+	// also restore the previously saved settings
+	appSettings::instance().loadFromFile();
 
 
 	// note: we make the size of the simulation independent of the screen size, so that we can test
@@ -79,8 +83,8 @@ void testApp::setup()
 	appSettings::instance().timeline.play();
 
 	// ------------------ initialize visual effects -------
-	blur.passes = 2;
-	blur.allocate(fluidEffect.getWidth(), fluidEffect.getHeight()); // same size as fluid
+	//blur.passes = 2;
+	//blur.allocate(fluidEffect.getWidth(), fluidEffect.getHeight()); // same size as fluid
 }
 
 void testApp::updateKinectInput()
@@ -122,20 +126,20 @@ void testApp::update()
 
     // Adding temporal Force
     //
-    ofPoint m = ofPoint(mouseX,mouseY);
+    ofPoint m = ofPoint(mouseX,mouseY) - _presentationOffset;
     ofVec2f d = (m - oldM)*10.0;
     oldM = m;
     ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
     c.normalize();
 
-	float quotaPercentage = 0.25f;
+	float quotaPercentage = 0.5f;
 
 	// if not speed-based then we always want to add a force, independent of movement. Otherwise
 	// we require a minimum movement distance
 	if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
 	{
 		fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
-		particleEffect.generate(currentTime, timeStep, ofVec2f(mouseX, mouseY), d, quotaPercentage);
+		particleEffect.generate(currentTime, timeStep, m, d, quotaPercentage);
 	}
 
 	// get the inputs from all Kinects and insert the relevant forces into the fluid simulation
@@ -183,6 +187,8 @@ void testApp::update()
 	particleEffect.update(currentTime, timeStep);
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
+
+	appSettings::instance().update();
 }
 
 //--------------------------------------------------------------
@@ -194,14 +200,15 @@ void testApp::draw()
 	// ---------------- horizontal line ------------------
 	ofSetLineWidth(1.0f);
 	ofSetColor(255);
-	ofLine(0.f, presentationHeight+1, presentationWidth, presentationHeight+1);
+	ofLine(_presentationOffset.x, _presentationOffset.y + presentationHeight+1, 
+			_presentationOffset.x + presentationWidth, _presentationOffset.y + presentationHeight+1);
 
 	// ------ fluid sim ----------------
-    fluidEffect.draw(0, 0, presentationWidth, presentationHeight);
+    fluidEffect.draw(_presentationOffset.x, _presentationOffset.y, presentationWidth, presentationHeight);
 
 	// --------- particles -------------
 	ofEnableBlendMode(OF_BLENDMODE_ADD);
-	particleEffect.draw(0, 0, presentationWidth, presentationHeight);
+	particleEffect.draw(_presentationOffset.x, _presentationOffset.y, presentationWidth, presentationHeight);
 	ofDisableBlendMode();
 
 	ofSetLineWidth(1.0f);
@@ -217,10 +224,10 @@ void testApp::draw()
 
 
 	// ---------------- GUI -----------------
+	appSettings::instance().draw(showGUI);
+
 	if(showGUI)
 	{
-		appSettings::instance().draw();
-
 		float kinectDepthStartX = 500;
 		float kinectDepthStartY = 400;
 
@@ -228,9 +235,9 @@ void testApp::draw()
 		for(int i=0; i<nrOfKinects; i++)
 		{
 			ofSetColor(255, 255, 0);
-			ofCircle(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(), 10.f);
+			ofCircle(_presentationOffset + kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(), 10.f);
 			ofSetColor(255, 0, 255);
-			ofCircle(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(), 10.f);
+			ofCircle(_presentationOffset + kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(), 10.f);
 
 
 			kinectForProjection[i]->kinect.getDepthTexture().draw(kinectDepthStartX + float(i)*320.0f, kinectDepthStartY);

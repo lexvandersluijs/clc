@@ -63,11 +63,14 @@ public:
 
 
 	// Visual effects
-	ofxGaussianBlur		blur;
+	//ofxGaussianBlur		blur;
 
 
 private:
 	float _prevTime;
+
+	ofVec2f _presentationOffset; // 0,0 in test mode, screenWidth,0 in production mode
+	bool _productionMode;
 
 	int presentationWidth;
 	int presentationHeight;

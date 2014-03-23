@@ -74,7 +74,7 @@ public:
 			//	ofCircle(50*i, 300, 20.f);
 
 			// and render our particles
-			_particleRenderer->Draw(4.f);
+			_particleRenderer->Draw(ofVec2f::zero(), 4.f);
 
 			//ofDisableBlendMode();
 			glow.end();
@@ -88,7 +88,7 @@ public:
 		glow.draw_dontEnableAlphaBlending(x, y, width, height);
 
 		// draw the lines themselves
-		_particleRenderer->Draw(0.5f);
+		_particleRenderer->Draw(ofVec2f(x, y), 0.5f);
 	}
 
 	int getWidth() { return width; }

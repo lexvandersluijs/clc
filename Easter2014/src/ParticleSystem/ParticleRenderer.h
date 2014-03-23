@@ -24,7 +24,7 @@ namespace ParticleSystem
 		{
 		}
 
-		void Draw(float size)
+		void Draw(ofVec2f offset, float size)
 		{
 			switch(_renderMode)
 			{
@@ -32,7 +32,7 @@ namespace ParticleSystem
 				DrawPoints();
 				break;
 			case ParticleRenderMode::Lines:
-				DrawLines(size);
+				DrawLines(offset, size);
 				break;
 			case ParticleRenderMode::Quads:
 				DrawQuads();
@@ -71,7 +71,7 @@ namespace ParticleSystem
 			}
 		}
 
-		void DrawLines(float width)
+		void DrawLines(ofVec2f offset, float width)
 		{
 			// for all active particles in manager
 			// add vertices + other info to VBO
@@ -96,12 +96,12 @@ namespace ParticleSystem
 					delta *= 5.f/length;
 				}
 
-				_linePoints[startIdx].x = particlesArray[i].Position.x;
-				_linePoints[startIdx].y = particlesArray[i].Position.y;
+				_linePoints[startIdx].x = offset.x + particlesArray[i].Position.x;
+				_linePoints[startIdx].y = offset.y + particlesArray[i].Position.y;
 				_linePoints[startIdx].z = 0.f;
 
-				_linePoints[endIdx].x = particlesArray[i].Position.x + delta.x;
-				_linePoints[endIdx].y = particlesArray[i].Position.y + delta.y;
+				_linePoints[endIdx].x = offset.x + particlesArray[i].Position.x + delta.x;
+				_linePoints[endIdx].y = offset.y + particlesArray[i].Position.y + delta.y;
 				_linePoints[endIdx].z = 0.f;
 
 				int startIdxColor = i*3*2;
