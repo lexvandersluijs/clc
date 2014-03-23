@@ -34,7 +34,7 @@ public:
 	{
 		_particleLifeTime = lifeTime;
 	}
-	int Generate(float timeStep, ofVec2f pos, ofVec2f direction)
+	int Generate(float timeStep, ofVec2f pos, ofVec2f direction, float quotaPercentage)
 	{
 		// add timeStep to elapsedtime 
 		// if the generationrate (particles/sec) multiplied by the elapsed time > 1 (nr of particles)
@@ -44,7 +44,7 @@ public:
 		// then give each a certain part of what is allowed, based on ratios
 		
 		_elapsedTime += timeStep;
-		float allowedCount = _particleQuotaRemainder + _generationRate * _elapsedTime;
+		float allowedCount = _particleQuotaRemainder + (_generationRate * quotaPercentage) * _elapsedTime;
 		float roundedCount = floor(allowedCount);		
 		if(roundedCount > 0)
 		{

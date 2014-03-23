@@ -28,6 +28,8 @@ void testApp::removeWindowBorder()
 }
 void testApp::setup()
 {
+	_prevTime = 0;
+
 	presentationWidth = 1280; //2400;
 	presentationHeight = 320; //600;
 
@@ -109,6 +111,12 @@ void testApp::updateFromSettings()
 
 void testApp::update()
 {
+	// first, some fundamentals
+	float currentTime = ofGetElapsedTimef();
+	float timeStep = currentTime - _prevTime;
+	_prevTime = currentTime;
+
+	// get inputs from input devices
     updateKinectInput();
 	updateFromSettings();
 
@@ -120,10 +128,15 @@ void testApp::update()
     ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
     c.normalize();
 
+	float quotaPercentage = 0.25f;
+
 	// if not speed-based then we always want to add a force, independent of movement. Otherwise
 	// we require a minimum movement distance
 	if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
+	{
 		fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+		particleEffect.generate(currentTime, timeStep, ofVec2f(mouseX, mouseY), d, quotaPercentage);
+	}
 
 	// get the inputs from all Kinects and insert the relevant forces into the fluid simulation
 	for(int i=0; i<nrOfKinects; i++)
@@ -139,14 +152,12 @@ void testApp::update()
 			ofFloatColor leftHandColor = ofFloatColor(1.0f, 0.f, 0.f); //leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 			// scale input to window size (temporary)
-			//ofVec3f leftHand = kinectForProjection[0]->leftHand;
-			//ofVec3f leftHandPos = leftHand;
-			//leftHandPos.x = leftHand.x * 512 + 512;
-			//leftHandPos.y = -leftHand.y * 384 + 512;
-			fluidEffect.getFluid().addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition(),
-								   kinectForProjection[i]->presentationSpaceJoints[LeftHand].getVelocity(), 
+			ofVec2f leftHandPos = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition();
+			ofVec2f leftHandDir = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getVelocity();
+			fluidEffect.getFluid().addTemporalForce(leftHandPos,
+								   leftHandDir, 
 								   leftHandColor, 3.0f);
-
+			particleEffect.generate(currentTime, timeStep, leftHandPos, leftHandDir, quotaPercentage);
 			// ------- compute movement direction of right hand ---------------
 		
 
@@ -156,15 +167,12 @@ void testApp::update()
 			ofFloatColor rightHandColor = ofFloatColor(1.f, 1.f, 0.f); //rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 			// scale input to window size (temporary)
-			//ofVec3f rightHand = kinectForProjection[0]->rightHand;
-			//ofVec3f rightHandPos = rightHand;
-			//rightHandPos.x = rightHand.x * 512 + 512;
-			//rightHandPos.y = -rightHand.y * 384 + 512;
-			//cout << "rightHandPos x,y = " << rightHandPos.x << ", " << rightHandPos.y << endl;
-			//fluid.addTemporalForce(rightHandPos, kinectForProjection[0]->rightHandDirection, rightHandColor,3.0f);
-			fluidEffect.getFluid().addTemporalForce(kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition(),
-								   kinectForProjection[i]->presentationSpaceJoints[RightHand].getVelocity(), 
+			ofVec2f rightHandPos = kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition();
+			ofVec2f rightHandDir = kinectForProjection[i]->presentationSpaceJoints[RightHand].getVelocity();
+			fluidEffect.getFluid().addTemporalForce(rightHandPos,
+								   rightHandDir, 
 								   rightHandColor, 3.0f);
+			particleEffect.generate(currentTime, timeStep, rightHandPos, rightHandDir, quotaPercentage);
 		}
 	}
 
@@ -172,7 +180,7 @@ void testApp::update()
     //
     fluidEffect.update();
     
-	particleEffect.update(ofVec2f(mouseX, mouseY), d);
+	particleEffect.update(currentTime, timeStep);
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }

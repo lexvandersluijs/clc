@@ -67,6 +67,8 @@ public:
 
 
 private:
+	float _prevTime;
+
 	int presentationWidth;
 	int presentationHeight;
 

@@ -7,7 +7,6 @@ private:
     ofxGaussianBlur glow;
 	int     width,height;
 
-	float _prevTime;
 	ParticleManager* _particleManager;
 	ParticleGenerator* _particleGenerator;
 	ParticleAnimator* _particleAnimator;
@@ -17,7 +16,6 @@ private:
 public:
 	void setup(int w, int h, ofFloatPixels& velocityMap, float screenToFluidScale)
 	{
-		_prevTime = 0;
 		_particleManager = new ParticleManager(50000);
 		_particleGenerator = new ParticleGenerator(_particleManager);
 		_particleGenerator->SetGenerationRate(1000);
@@ -46,18 +44,19 @@ public:
 		delete _particleManager;
 	}
 
-	void update(ofVec2f mousePos, ofVec2f direction)
+	void generate(float currentTime, float timeStep, ofVec2f mousePos, ofVec2f direction, float quotaPercentage)
 	{
-		float currentTime = ofGetElapsedTimef();
-		float timeStep = currentTime - _prevTime;
+		if(!appSettings::instance().speedBasedGeneration || direction.length() > 4.0f)
+			_particleGenerator->Generate(timeStep, mousePos, direction, quotaPercentage); 
 
+	}
+
+	// note: generate has been called before this
+	void update(float currentTime, float timeStep)
+	{
 		if(timeStep < 1.0f) // ignore timesteps that are too large
 		{
 			_particleManager->Update(timeStep);
-
-			if(!appSettings::instance().speedBasedGeneration || direction.length() > 4.0f)
-				_particleGenerator->Generate(timeStep, mousePos, direction); // TODO: specify a position and velocity for the creation
-
 			_particleAnimator->Update(currentTime, timeStep); // compute new properties (position, color, age, etc) all particles
 
 			glow.begin();
@@ -82,8 +81,6 @@ public:
 
 			glow.update();
 		}
-
-		_prevTime = currentTime;
 	}
 	void draw(int x, int y, float width, float height)
 	{
