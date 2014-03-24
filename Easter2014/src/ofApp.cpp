@@ -5,25 +5,52 @@ appSettings* appSettings::inst;
 
 //--------------------------------------------------------------
 
-void testApp::removeWindowBorder()
+HWND GetWindowHandle()
 {
-	bool showWindowBorder = false;
-	if (!showWindowBorder) {
-	  HWND m_hWnd = WindowFromDC(wglGetCurrentDC());
-	  long style = ::GetWindowLong(m_hWnd, GWL_STYLE);
-	  style &= ~WS_DLGFRAME;
-	  style &= ~WS_CAPTION;
-	  style &= ~WS_BORDER;
-	  style &= WS_POPUP;
-	  //_originalWindowStyle = style;
-	  ::SetWindowLong(m_hWnd, GWL_STYLE, style);
+	return WindowFromDC(wglGetCurrentDC());
+}
 
-	  long exstyle = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
-	  exstyle &= ~WS_EX_DLGMODALFRAME;
-	  //_originalWindowStyleEx = exstyle;
-	  ::SetWindowLong(m_hWnd, GWL_EXSTYLE, exstyle);
+void testApp::configureWindowBorder(bool showWindowBorder)
+{
+	if (showWindowBorder) 
+	{
+		HWND hWnd = GetWindowHandle();
+		long style = ::GetWindowLong(hWnd, GWL_STYLE);
+		style |= WS_DLGFRAME;
+		style |= WS_CAPTION;
+		style |= WS_BORDER;
+		style |= WS_THICKFRAME;
+//		style &= ~WS_POPUP;
+		::SetWindowLong(hWnd, GWL_STYLE, style);
 
-	  SetWindowPos(m_hWnd, HWND_TOPMOST, 1920,0,0,0, SWP_NOSIZE);
+		long exstyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
+		exstyle |= WS_EX_DLGMODALFRAME;
+		exstyle |= WS_EX_CLIENTEDGE;
+		exstyle |= WS_EX_STATICEDGE;
+		::SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+
+		// call SetWindowPos to _apply_ the frame change, see http://msdn.microsoft.com/en-us/library/windows/desktop/ms633545(v=vs.85).aspx
+		::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+	}
+	else
+	{
+		HWND hWnd = GetWindowHandle();
+		long style = ::GetWindowLong(hWnd, GWL_STYLE);
+		style &= ~WS_DLGFRAME;
+		style &= ~WS_CAPTION;
+		style &= ~WS_BORDER;
+		style &= ~WS_THICKFRAME;
+//		style &= WS_POPUP;
+		::SetWindowLong(hWnd, GWL_STYLE, style);
+
+		long exstyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
+		exstyle &= ~WS_EX_DLGMODALFRAME;
+		exstyle &= ~WS_EX_CLIENTEDGE ;
+		exstyle &= ~WS_EX_STATICEDGE ;
+		::SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
+
+		// call SetWindowPos to _apply_ the frame change, see http://msdn.microsoft.com/en-us/library/windows/desktop/ms633545(v=vs.85).aspx
+		::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
 	}
 }
 void testApp::setup()
@@ -35,8 +62,7 @@ void testApp::setup()
 
 	//removeWindowBorder();
 
-	_presentationOffset.x = 100.f;
-	_presentationOffset.y = 100.f;
+	_presentationOffset = ofVec2f::zero();
 
 	showGUI = true;
 
@@ -112,9 +138,57 @@ void testApp::updateFromSettings()
 
 //--------------------------------------------------------------
 
+void testApp::changeProductionModeSetting(bool productionMode)
+{
+	if(productionMode != _productionMode)
+	{
+		HWND hWnd = GetWindowHandle();
+		int primaryScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		int primaryScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+		if(productionMode)
+		{
+			// switch to production mode:
+			// remove window border, change offset for presentation, set window position
+			configureWindowBorder(false);
+
+			// move the presentation to exactly to the right of the main window so that it lies in the extended desktop area
+			_presentationOffset = ofVec2f(primaryScreenWidth, 0.f);
+
+			int windowWidth = primaryScreenWidth + presentationWidth;
+			int windowHeight = 1000;
+
+			::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
+		}
+		else
+		{
+			// switch to test mode:
+			// put back window border, change offset for presentation back to 0,0, set window position
+			// in develop/test-mode, the presentation is underneath the timeline and GUI
+			configureWindowBorder(true);
+
+			_presentationOffset = ofVec2f::zero();
+
+			int windowWidth = primaryScreenWidth;
+			int windowHeight = 1000;
+
+			::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
+		}
+		_productionMode = productionMode;
+	}
+}
+
+bool testApp::pointInsidePresentationArea(ofVec2f p)
+{
+	if(p.x > 0.f && p.y > 0.f && p.x < presentationWidth && p.y < presentationHeight)
+		return true;
+
+	return false;
+}
 
 void testApp::update()
 {
+
 	// first, some fundamentals
 	float currentTime = ofGetElapsedTimef();
 	float timeStep = currentTime - _prevTime;
@@ -124,22 +198,27 @@ void testApp::update()
     updateKinectInput();
 	updateFromSettings();
 
+	float quotaPercentage = 0.5f;
+
     // Adding temporal Force
     //
     ofPoint m = ofPoint(mouseX,mouseY) - _presentationOffset;
-    ofVec2f d = (m - oldM)*10.0;
-    oldM = m;
-    ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
-    c.normalize();
 
-	float quotaPercentage = 0.5f;
-
-	// if not speed-based then we always want to add a force, independent of movement. Otherwise
-	// we require a minimum movement distance
-	if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
+	// only apply forces to fluids, generate particles if the mouse cursor is inside the presentation area
+	if(pointInsidePresentationArea(m))
 	{
-		fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
-		particleEffect.generate(currentTime, timeStep, m, d, quotaPercentage);
+		ofVec2f d = (m - oldM)*10.0;
+		oldM = m;
+		ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
+		c.normalize();
+
+		// if not speed-based then we always want to add a force, independent of movement. Otherwise
+		// we require a minimum movement distance
+		if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
+		{
+			fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+			particleEffect.generate(currentTime, timeStep, m, d, quotaPercentage);
+		}
 	}
 
 	// get the inputs from all Kinects and insert the relevant forces into the fluid simulation
@@ -158,10 +237,13 @@ void testApp::update()
 			// scale input to window size (temporary)
 			ofVec2f leftHandPos = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition();
 			ofVec2f leftHandDir = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getVelocity();
-			fluidEffect.getFluid().addTemporalForce(leftHandPos,
-								   leftHandDir, 
-								   leftHandColor, 3.0f);
-			particleEffect.generate(currentTime, timeStep, leftHandPos, leftHandDir, quotaPercentage);
+			if(pointInsidePresentationArea(leftHandPos))
+			{
+				fluidEffect.getFluid().addTemporalForce(leftHandPos,
+										leftHandDir, 
+										leftHandColor, 3.0f);
+				particleEffect.generate(currentTime, timeStep, leftHandPos, leftHandDir, quotaPercentage);
+			}
 			// ------- compute movement direction of right hand ---------------
 		
 
@@ -173,13 +255,16 @@ void testApp::update()
 			// scale input to window size (temporary)
 			ofVec2f rightHandPos = kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition();
 			ofVec2f rightHandDir = kinectForProjection[i]->presentationSpaceJoints[RightHand].getVelocity();
-			fluidEffect.getFluid().addTemporalForce(rightHandPos,
-								   rightHandDir, 
-								   rightHandColor, 3.0f);
-			particleEffect.generate(currentTime, timeStep, rightHandPos, rightHandDir, quotaPercentage);
+			if(pointInsidePresentationArea(rightHandPos))
+			{
+				fluidEffect.getFluid().addTemporalForce(rightHandPos,
+										rightHandDir, 
+										rightHandColor, 3.0f);
+				particleEffect.generate(currentTime, timeStep, rightHandPos, rightHandDir, quotaPercentage);
+			}
 		}
 	}
-
+	
     //  Update
     //
     fluidEffect.update();
@@ -197,11 +282,14 @@ void testApp::draw()
 	//ofBackgroundGradient(ofColor::darkGray, ofColor::black, OF_GRADIENT_LINEAR);
 	ofBackground(ofColor::black);
 
-	// ---------------- horizontal line ------------------
-	ofSetLineWidth(1.0f);
-	ofSetColor(255);
-	ofLine(_presentationOffset.x, _presentationOffset.y + presentationHeight+1, 
-			_presentationOffset.x + presentationWidth, _presentationOffset.y + presentationHeight+1);
+	// ---------------- horizontal line below presentation area for testing ------------------
+	if(!_productionMode)
+	{
+		ofSetLineWidth(1.0f);
+		ofSetColor(255);
+		ofLine(_presentationOffset.x, _presentationOffset.y + presentationHeight+1, 
+				_presentationOffset.x + presentationWidth, _presentationOffset.y + presentationHeight+1);
+	}
 
 	// ------ fluid sim ----------------
     fluidEffect.draw(_presentationOffset.x, _presentationOffset.y, presentationWidth, presentationHeight);
@@ -263,6 +351,10 @@ void testApp::keyPressed(int key)
 	if(key == ' ')
 	{
 		showGUI = !showGUI;
+	}
+	else if(key == 'p')
+	{
+		changeProductionModeSetting(!_productionMode);
 	}
 }
 

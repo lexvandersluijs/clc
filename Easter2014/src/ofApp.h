@@ -32,8 +32,9 @@ public:
 	{
 	}
 
-	void removeWindowBorder();
+	void configureWindowBorder(bool showWindowBorder);
     void setup();
+	void changeProductionModeSetting(bool productionMode);
     void update();
     void draw();
 	void exit();
@@ -77,6 +78,7 @@ private:
 
 	bool showGUI;
 
+	bool pointInsidePresentationArea(ofVec2f p);
 	void updateKinectInput();
 	void updateFromSettings();
 };
