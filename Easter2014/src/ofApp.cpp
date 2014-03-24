@@ -59,14 +59,20 @@ void testApp::setup()
 
 	presentationWidth = 1280; //2400;
 	presentationHeight = 320; //600;
+	float screenToFluidScale = 0.4f;
 
-	//removeWindowBorder();
+	bool testWithTwnklsBeamer = true;
+	if(testWithTwnklsBeamer)
+	{
+		presentationWidth = 1280; 
+		presentationHeight = 800; 
+		screenToFluidScale = 0.25f;
+	}
 
 	_presentationOffset = ofVec2f::zero();
 
 	showGUI = true;
 
-	// ------------------------ init fluid simulation -----------------------
     ofEnableAlphaBlending();
     ofSetCircleResolution(100);
 
@@ -95,22 +101,17 @@ void testApp::setup()
 	// also restore the previously saved settings
 	appSettings::instance().loadFromFile();
 
-
+	// ------------------------ init fluid simulation and particles-----------------------
 	// note: we make the size of the simulation independent of the screen size, so that we can test
 	// everything in the right proportions and at the right resolution, even before we have the 
 	// triple-beamer, double-kinect setup..
-	float screenToFluidScale = 0.4f;
 	fluidEffect.setup(presentationWidth, presentationHeight, screenToFluidScale);
-
 	particleEffect.setup(presentationWidth, presentationHeight, fluidEffect.getVelocityMap(), screenToFluidScale);
 
 
 	// finally, start playing the timeline
 	appSettings::instance().timeline.play();
 
-	// ------------------ initialize visual effects -------
-	//blur.passes = 2;
-	//blur.allocate(fluidEffect.getWidth(), fluidEffect.getHeight()); // same size as fluid
 }
 
 void testApp::updateKinectInput()

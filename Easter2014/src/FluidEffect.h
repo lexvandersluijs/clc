@@ -31,10 +31,10 @@ public:
 			fluid.addConstantForce(ofPoint(width*0.75,height*0.9), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 3.f);
 			break;
 		case 1:
-			fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(-10,0), ofFloatColor(0.5,0.1,0.0), 3.f);
-			fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(10, 0), ofFloatColor(0.5,0.1,0.0), 3.f);
-			fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(0,-10), ofFloatColor(0.5,0.1,0.0), 3.f);
-			fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(0, 10), ofFloatColor(0.5,0.1,0.0), 3.f);
+			//fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(-10,0), ofFloatColor(0.5,0.1,0.0), 3.f);
+			//fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(10, 0), ofFloatColor(0.5,0.1,0.0), 3.f);
+			//fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(0,-10), ofFloatColor(0.5,0.1,0.0), 3.f);
+			//fluid.addConstantForce(ofPoint(width*0.5,height*0.5), ofPoint(0, 10), ofFloatColor(0.5,0.1,0.0), 3.f);
 			break;
 		}
 	}
