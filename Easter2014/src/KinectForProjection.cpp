@@ -13,7 +13,7 @@ void KinectForProjection::setup(int index)
 	kinect.start();
 
 	if(kinect.getNuiSensor() != nullptr)
-		kinect.getNuiSensor()->NuiCameraElevationSetAngle(10);
+		kinect.getNuiSensor()->NuiCameraElevationSetAngle(15);
 
 	hasSkeleton = false;
 	jointDistance = 1.f;
@@ -27,11 +27,11 @@ void KinectForProjection::setupGUI()
 
 	nameSS = stringstream();
 	nameSS << "kinect " << _index << " forward offset";
-	appSettings::instance().gui.add(kinectForwardOffset.setup( nameSS.str(), kinectOffsetFromProjector.z, 100, 400, 400 ));
+	appSettings::instance().gui.add(kinectForwardOffset.setup( nameSS.str(), kinectOffsetFromProjector.z, 0, 400, 400 ));
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " FL";
-	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 1000, 400 ));
+	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 2000, 400 ));
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " PP X";

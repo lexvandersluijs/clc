@@ -78,7 +78,10 @@ private:
 
 	bool showGUI;
 
+	int _colorMode;
+
 	bool pointInsidePresentationArea(ofVec2f p);
+	ofFloatColor generateColor(ofVec2f position, ofVec2f dir, float currentTime, int limbIndex);
 	void updateKinectInput();
 	void updateFromSettings();
 };

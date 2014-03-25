@@ -61,7 +61,6 @@ public:
 				timeline.show();
 				timeline.play();
 			}
-			//timeline.setOffset(ofVec2f(0.f, 0.f));
 		}
 		else
 		{
@@ -70,10 +69,6 @@ public:
 				timeline.hide();
 				timeline.play();
 			}
-			// move the timeline out of view if it should not be drawn anymore..
-			// .. because if we don't call draw(), it won't fire events..
-			//timeline.setOffset(ofVec2f(0.f, 900.f));
-			//timeline.play();
 		}
 		timeline.draw();
 	}

@@ -73,6 +73,8 @@ void testApp::setup()
 
 	showGUI = true;
 
+	_colorMode = 2;
+
     ofEnableAlphaBlending();
     ofSetCircleResolution(100);
 
@@ -159,7 +161,7 @@ void testApp::changeProductionModeSetting(bool productionMode)
 			int windowWidth = primaryScreenWidth + presentationWidth;
 			int windowHeight = 1000;
 
-			::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
+			//::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
 		}
 		else
 		{
@@ -173,7 +175,7 @@ void testApp::changeProductionModeSetting(bool productionMode)
 			int windowWidth = primaryScreenWidth;
 			int windowHeight = 1000;
 
-			::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
+			//::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, windowWidth, windowHeight, 0);
 		}
 		_productionMode = productionMode;
 	}
@@ -185,6 +187,48 @@ bool testApp::pointInsidePresentationArea(ofVec2f p)
 		return true;
 
 	return false;
+}
+
+// limb index:
+// 0: left hand
+// 1: right hand
+// 2: left foot (?)
+// 3: right foot (?)
+
+ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float currentTime, int limbIndex)
+{
+	ofFloatColor c;
+	switch(_colorMode)
+	{
+
+	// original mode from ofxFluid
+	case 0:
+		{
+		ofPoint cn = ofPoint(640*0.5, 480*0.5) - position;
+		cn.normalize();
+		c = ofFloatColor(cn.x,cn.y,0.5) * sin(currentTime);
+		}
+		break;
+
+	// constant color
+	case 1:
+		if(limbIndex%2 == 0)
+			c = ofFloatColor(1.0f, 0.f, 0.f);
+		else
+			c = ofFloatColor(1.0f, 1.f, 0.f);
+		break;
+
+	case 2:
+		if(limbIndex%2 == 0)
+			c = ofFloatColor::fromHsb(fmod(currentTime / 3.f, 1.f), 1.f, 0.5f);
+		else
+			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 0.5f);
+		break;
+	}
+
+
+	//cout << "color: " << color << "c.x: " << c.x << "c.y: " << c.y << endl;
+	return c;
 }
 
 void testApp::update()
@@ -210,14 +254,14 @@ void testApp::update()
 	{
 		ofVec2f d = (m - oldM)*10.0;
 		oldM = m;
-		ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
-		c.normalize();
+
 
 		// if not speed-based then we always want to add a force, independent of movement. Otherwise
 		// we require a minimum movement distance
 		if(!appSettings::instance().speedBasedGeneration || d.length() > 3)
 		{
-			fluidEffect.getFluid().addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+			ofFloatColor color = generateColor(m, d, currentTime, 0); 
+			fluidEffect.getFluid().addTemporalForce(m, d, color ,3.0f);
 			particleEffect.generate(currentTime, timeStep, m, d, quotaPercentage);
 		}
 	}
@@ -231,13 +275,16 @@ void testApp::update()
 		
 
 			// determine color
-			ofPoint leftHandC = ofPoint(640*0.5, 480*0.5) - m;
-			leftHandC.normalize();
-			ofFloatColor leftHandColor = ofFloatColor(1.0f, 0.f, 0.f); //leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
+			//ofPoint leftHandC = ofPoint(640*0.5, 480*0.5) - m;
+			//leftHandC.normalize();
+		
 
 			// scale input to window size (temporary)
 			ofVec2f leftHandPos = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getPosition();
 			ofVec2f leftHandDir = kinectForProjection[i]->presentationSpaceJoints[LeftHand].getVelocity();
+
+			ofFloatColor leftHandColor = generateColor(leftHandPos, leftHandDir, currentTime, 0); //ofFloatColor(1.0f, 0.f, 0.f); //leftHandC.x,leftHandC.y,0.5)*sin(ofGetElapsedTimef());
+
 			if(pointInsidePresentationArea(leftHandPos))
 			{
 				fluidEffect.getFluid().addTemporalForce(leftHandPos,
@@ -249,13 +296,16 @@ void testApp::update()
 		
 
 			// determine color
-			ofPoint rightHandC = ofPoint(640*0.5, 480*0.5) - m;
-			rightHandC.normalize();
-			ofFloatColor rightHandColor = ofFloatColor(1.f, 1.f, 0.f); //rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
+			//ofPoint rightHandC = ofPoint(640*0.5, 480*0.5) - m;
+			//rightHandC.normalize();
+			//ofFloatColor rightHandColor = ofFloatColor(1.f, 1.f, 0.f); //rightHandC.x,rightHandC.y,0.5)*sin(ofGetElapsedTimef());
 
 			// scale input to window size (temporary)
 			ofVec2f rightHandPos = kinectForProjection[i]->presentationSpaceJoints[RightHand].getPosition();
 			ofVec2f rightHandDir = kinectForProjection[i]->presentationSpaceJoints[RightHand].getVelocity();
+			
+			ofFloatColor rightHandColor = generateColor(rightHandPos, rightHandDir, currentTime, 1); 
+
 			if(pointInsidePresentationArea(rightHandPos))
 			{
 				fluidEffect.getFluid().addTemporalForce(rightHandPos,
@@ -349,14 +399,40 @@ void testApp::keyPressed(int key)
 {
 	fluidEffect.keyPressed(key);
 
-	if(key == ' ')
+	switch(key)
 	{
-		showGUI = !showGUI;
+		case ' ':
+			showGUI = !showGUI;
+			break;
+		case 'p':
+			changeProductionModeSetting(!_productionMode);
+			break;
+		case '0':
+			_colorMode = 0;
+			break;
+		case '1':
+			_colorMode = 1;
+			break;
+		case '2':
+			_colorMode = 2;
+			break;
+		case '3':
+			_colorMode = 3;
+			break;
+		case '4':
+			_colorMode = 4;
+			break;
+		case '5':
+			_colorMode = 5;
+			break;
+		case '6':
+			_colorMode = 6;
+			break;
+		case '7':
+			_colorMode = 7;
+			break;
 	}
-	else if(key == 'p')
-	{
-		changeProductionModeSetting(!_productionMode);
-	}
+
 }
 
 //--------------------------------------------------------------
