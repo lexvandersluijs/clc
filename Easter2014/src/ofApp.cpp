@@ -224,6 +224,17 @@ ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float current
 		else
 			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 0.5f);
 		break;
+
+	// based on velocity (pixels per second)
+	case 3: 
+		{
+			float speed = dir.length();
+			cout << "speed: " << speed << endl;
+
+			c = ofFloatColor::red;
+			c = c.getLerped(ofFloatColor::yellow, ofClamp(speed / 250.f, 0, 1.f));
+		}
+		break;
 	}
 
 
