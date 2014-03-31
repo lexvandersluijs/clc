@@ -87,7 +87,7 @@ private:
 
 	// ------------- variables for OSC --------------
 	ofTrueTypeFont font;
-	ofxOscReceiver receiver;
+	ofxOscReceiver receiver; 
 
 	int current_msg_string;
 	string msg_strings[NUM_MSG_STRINGS];
