@@ -31,7 +31,8 @@ public:
 	{
 		// ---------------- initialize timeline --------------
 		timeline.setup(); //registers events
-		timeline.setDurationInSeconds(10); //sets time
+		timeline.setWidth(1900);
+		timeline.setDurationInSeconds(300); //sets time
 		timeline.setLoopType(OF_LOOP_NORMAL); //turns the timeline to loop
 
 		//add a tracks, etc
@@ -51,26 +52,11 @@ public:
 	void draw(bool visible)
 	{
 		if(visible)
+		{
 			gui.draw();
-
-
-		if(visible)
-		{
-			if(timeline.getIsShowing() == false)
-			{
-				timeline.show();
-				timeline.play();
-			}
+			timeline.draw();
 		}
-		else
-		{
-			if(timeline.getIsShowing() == true)
-			{
-				timeline.hide();
-				timeline.play();
-			}
-		}
-		timeline.draw();
+
 	}
 	void update()
 	{

@@ -64,15 +64,16 @@ void testApp::setup()
 	bool testWithTwnklsBeamer = true;
 	if(testWithTwnklsBeamer)
 	{
-		presentationWidth = 1280; 
-		presentationHeight = 800; 
+		presentationWidth = 1024; 
+		presentationHeight = 768; 
 		screenToFluidScale = 0.25f;
 	}
 
 	_presentationOffset = ofVec2f::zero();
 
-	showGUI = true;
-
+	_showGUI = true;
+	_productionMode = false; // start with presentation on main monitor
+	_visible = true;
 	_colorMode = 2;
 
     ofEnableAlphaBlending();
@@ -81,7 +82,7 @@ void testApp::setup()
     //ofSetWindowShape(width, height);
 
 	// -------------- initialize Kinect(s) --------------
-	nrOfKinects = 1;
+	nrOfKinects = 2;
 	kinectForProjection[0] = new KinectForProjection();
 	kinectForProjection[0]->kinectOffsetFromProjector.x = 0;
 	kinectForProjection[0]->kinectOffsetFromProjector.y = -300; // cm
@@ -90,8 +91,15 @@ void testApp::setup()
 	kinectForProjection[0]->toPresentationSpacePrincipalPoint.y = presentationHeight / 2;
 	kinectForProjection[0]->toPresentationSpaceFocalLength = 400; // pixels
 	kinectForProjection[0]->setup(0);
-	//kinectForProjection[1] = new KinectForProjection();
-	//kinectForProjection[1].setup(1);
+
+	kinectForProjection[1] = new KinectForProjection();
+	kinectForProjection[1]->kinectOffsetFromProjector.x = 0;
+	kinectForProjection[1]->kinectOffsetFromProjector.y = -300; // cm
+	kinectForProjection[1]->kinectOffsetFromProjector.z = 300; // assuming z points forward
+	kinectForProjection[1]->toPresentationSpacePrincipalPoint.x = (presentationWidth/3) / 2;
+	kinectForProjection[1]->toPresentationSpacePrincipalPoint.y = presentationHeight / 2;
+	kinectForProjection[1]->toPresentationSpaceFocalLength = 400; // pixels
+	kinectForProjection[1]->setup(1);
 
 	// ---------------- initialize base settings object --------------
 	appSettings::instance().setup();
@@ -112,8 +120,93 @@ void testApp::setup()
 
 
 	// finally, start playing the timeline
-	appSettings::instance().timeline.play();
+	//appSettings::instance().timeline.play();
 
+	// --------------------- for OSC --------------------------
+	cout << "listening for osc messages on port " << PORT << "\n";
+	receiver.setup(PORT);
+
+	current_msg_string = 0;
+}
+
+void testApp::updateFromOSC()
+{
+	// hide old messages
+	for(int i = 0; i < NUM_MSG_STRINGS; i++){
+		if(timers[i] < ofGetElapsedTimef()){
+			msg_strings[i] = "";
+		}
+	}
+
+	// check for waiting messages
+	while(receiver.hasWaitingMessages()){
+		// get the next message
+		ofxOscMessage m;
+		receiver.getNextMessage(&m);
+
+		// check for mouse moved message
+		if(m.getAddress() == "/mouse/position"){
+			// both the arguments are int32's
+			oscMouseX = m.getArgAsInt32(0);
+			oscMouseY = m.getArgAsInt32(1);
+		}
+		// check for mouse button message
+		else if(m.getAddress() == "/mouse/button"){
+			// the single argument is a string
+			oscMouseButtonState = m.getArgAsString(0);
+		}
+		else if(m.getAddress() == "/start"){
+			// the single argument is a string
+			appSettings::instance().timeline.setCurrentTimeSeconds(0.f);
+			appSettings::instance().timeline.play();
+		}
+		else if(m.getAddress() == "/stop"){
+			appSettings::instance().timeline.stop();
+		}
+		else if(m.getAddress() == "/visible"){
+			_visible = true;
+		}
+		else if(m.getAddress() == "/invisible"){
+			_visible = false;
+		}
+		else if(m.getAddress() == "/color1"){
+			_colorMode = 1; // Red / yellow
+		}
+		else if(m.getAddress() == "/color2"){
+			_colorMode = 2; // happy colors
+		}
+
+		else{
+			// unrecognized message: display on the bottom of the screen
+			string msg_string;
+			msg_string = m.getAddress();
+			msg_string += ": ";
+			for(int i = 0; i < m.getNumArgs(); i++){
+				// get the argument type
+				msg_string += m.getArgTypeName(i);
+				msg_string += ":";
+				// display the argument - make sure we get the right type
+				if(m.getArgType(i) == OFXOSC_TYPE_INT32){
+					msg_string += ofToString(m.getArgAsInt32(i));
+				}
+				else if(m.getArgType(i) == OFXOSC_TYPE_FLOAT){
+					msg_string += ofToString(m.getArgAsFloat(i));
+				}
+				else if(m.getArgType(i) == OFXOSC_TYPE_STRING){
+					msg_string += m.getArgAsString(i);
+				}
+				else{
+					msg_string += "unknown";
+				}
+			}
+			// add to the list of strings to display
+			msg_strings[current_msg_string] = msg_string;
+			timers[current_msg_string] = ofGetElapsedTimef() + 5.0f;
+			current_msg_string = (current_msg_string + 1) % NUM_MSG_STRINGS;
+			// clear the next line
+			msg_strings[current_msg_string] = "";
+		}
+	}
 }
 
 void testApp::updateKinectInput()
@@ -183,7 +276,7 @@ void testApp::changeProductionModeSetting(bool productionMode)
 
 bool testApp::pointInsidePresentationArea(ofVec2f p)
 {
-	if(p.x > 0.f && p.y > 0.f && p.x < presentationWidth && p.y < presentationHeight)
+	if((p.x > 10.f) && (p.y > 10.f) && (p.x < presentationWidth-10.f) && (p.y < presentationHeight-10.f))
 		return true;
 
 	return false;
@@ -220,9 +313,9 @@ ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float current
 
 	case 2:
 		if(limbIndex%2 == 0)
-			c = ofFloatColor::fromHsb(fmod(currentTime / 3.f, 1.f), 1.f, 0.5f);
+			c = ofFloatColor::fromHsb(fmod(currentTime / 3.f, 1.f), 1.f, 0.7f);
 		else
-			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 0.5f);
+			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 0.7f);
 		break;
 
 	// based on velocity (pixels per second)
@@ -244,6 +337,7 @@ ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float current
 
 void testApp::update()
 {
+	updateFromOSC();
 
 	// first, some fundamentals
 	float currentTime = ofGetElapsedTimef();
@@ -338,6 +432,22 @@ void testApp::update()
 	appSettings::instance().update();
 }
 
+void testApp::drawOSC()
+{
+	string buf;
+	buf = "listening for osc messages on port" + ofToString(PORT);
+	ofDrawBitmapString(buf, 10, 20);
+
+	// draw mouse state
+	buf = "mouse: " + ofToString(oscMouseX, 4) +  " " + ofToString(oscMouseY, 4);
+	ofDrawBitmapString(buf, 430, 20);
+	ofDrawBitmapString(oscMouseButtonState, 580, 20);
+
+	for(int i = 0; i < NUM_MSG_STRINGS; i++){
+		ofDrawBitmapString(msg_strings[i], 10, 40 + 15 * i);
+	}	
+}
+
 //--------------------------------------------------------------
 void testApp::draw()
 {
@@ -374,9 +484,9 @@ void testApp::draw()
 
 
 	// ---------------- GUI -----------------
-	appSettings::instance().draw(showGUI);
+	appSettings::instance().draw(_showGUI);
 
-	if(showGUI)
+	if(_showGUI)
 	{
 		float kinectDepthStartX = 500;
 		float kinectDepthStartY = 400;
@@ -392,6 +502,9 @@ void testApp::draw()
 
 			kinectForProjection[i]->kinect.getDepthTexture().draw(kinectDepthStartX + float(i)*320.0f, kinectDepthStartY);
 		}
+
+		// draw debug output from OSC
+		drawOSC();
 
 	}
 }
@@ -412,8 +525,11 @@ void testApp::keyPressed(int key)
 
 	switch(key)
 	{
-		case ' ':
-			showGUI = !showGUI;
+		case OF_KEY_TAB:
+			_showGUI = !_showGUI;
+			break;
+		case 'v':
+			_visible = !_visible;
 			break;
 		case 'p':
 			changeProductionModeSetting(!_productionMode);

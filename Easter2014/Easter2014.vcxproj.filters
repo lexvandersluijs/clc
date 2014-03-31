@@ -52,11 +52,17 @@
     <Filter Include="addons\ofxFastFboReader">
       <UniqueIdentifier>{42ab3ee6-62bd-4f8e-8591-5b59dde2978b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxMSAFluid">
-      <UniqueIdentifier>{ad69f0cf-6a33-4dbb-9c90-d9b8b9d6a7eb}</UniqueIdentifier>
+    <Filter Include="addons\ofxOSC">
+      <UniqueIdentifier>{39c8483c-0829-4ec1-8770-78c76a931127}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxMSACore">
-      <UniqueIdentifier>{69e67cbe-be46-4e60-a76e-1e4c0d4b21e3}</UniqueIdentifier>
+    <Filter Include="addons\ofxOSC\libs">
+      <UniqueIdentifier>{15a411e6-3e7d-4708-80a7-3164a33ca703}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxOSC\libs\osc">
+      <UniqueIdentifier>{f0c95841-db15-4fc5-835a-042993717df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxOSC\libs\ip">
+      <UniqueIdentifier>{e27bbe15-a6a8-42f2-a660-71e3095027ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -243,41 +249,71 @@
     <ClInclude Include="src\ParticleSystem\FluidSimulationAnimator.h">
       <Filter>Source Files\ParticleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluid.h">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerBase.h">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerGl-OF.h">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidParticleUpdater.h">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.h">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACore.h">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreCommon.h">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.h">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACoreMath.h">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxMSACore\src\MSACore-OF.h">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClInclude>
     <ClInclude Include="src\appSettings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\KinectForProjection.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOsc.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscArg.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscBundle.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscMessage.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscParameterSync.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscReceiver.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOscSender.h">
+      <Filter>addons\ofxOSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\IpEndpointName.h">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\NetworkingUtils.h">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\PacketListener.h">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\TimerListener.h">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\UdpSocket.h">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\MessageMappingOscPacketListener.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscException.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscHostEndianness.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscOutboundPacketStream.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscPacketListener.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscPrintReceivedElements.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscReceivedElements.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscTypes.h">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,17 +368,44 @@
     <ClCompile Include="..\..\..\addons\ofxFastFboReader\src\ofxFastFboReader.cpp">
       <Filter>addons\ofxFastFboReader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidDrawerBase.cpp">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxMSAFluid\src\MSAFluidSolver.cpp">
-      <Filter>addons\ofxMSAFluid</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxMSACore\src\MSACoreGL.cpp">
-      <Filter>addons\ofxMSACore</Filter>
-    </ClCompile>
     <ClCompile Include="src\fluidEffect.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscBundle.cpp">
+      <Filter>addons\ofxOSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscMessage.cpp">
+      <Filter>addons\ofxOSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscParameterSync.cpp">
+      <Filter>addons\ofxOSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscReceiver.cpp">
+      <Filter>addons\ofxOSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscSender.cpp">
+      <Filter>addons\ofxOSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\IpEndpointName.cpp">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32\NetworkingUtilsWin.cpp">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32\UdpSocketWin.cpp">
+      <Filter>addons\ofxOSC\libs\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscOutboundPacketStream.cpp">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscPrintReceivedElements.cpp">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscReceivedElements.cpp">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscTypes.cpp">
+      <Filter>addons\ofxOSC\libs\osc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

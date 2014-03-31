@@ -10,6 +10,7 @@
 #include "ofxGui.h"
 #include "ofxGlow.h"
 #include "ofxFastFboReader.h" // for getting the velocity vector field from the GPU
+#include "ofxOscReceiver.h"
 
 #include "appSettings.h"
 
@@ -25,6 +26,8 @@
 #include "ParticleSystem/FluidSimulationAnimator.h"
 #include "ParticleEffect.h"
 
+#define PORT 12345
+#define NUM_MSG_STRINGS 20
 
 class testApp : public ofBaseApp{
 public:
@@ -72,16 +75,31 @@ private:
 
 	ofVec2f _presentationOffset; // 0,0 in test mode, screenWidth,0 in production mode
 	bool _productionMode;
+	bool _visible;
+	bool _showGUI;
+	int _colorMode;
 
 	int presentationWidth;
 	int presentationHeight;
 
-	bool showGUI;
-
-	int _colorMode;
-
 	bool pointInsidePresentationArea(ofVec2f p);
 	ofFloatColor generateColor(ofVec2f position, ofVec2f dir, float currentTime, int limbIndex);
+
+	// ------------- variables for OSC --------------
+	ofTrueTypeFont font;
+	ofxOscReceiver receiver;
+
+	int current_msg_string;
+	string msg_strings[NUM_MSG_STRINGS];
+	float timers[NUM_MSG_STRINGS];
+
+	int oscMouseX, oscMouseY;
+	string oscMouseButtonState;
+
+	void drawOSC();
+
+	// ------------- update functions --------------
+	void updateFromOSC();
 	void updateKinectInput();
 	void updateFromSettings();
 };

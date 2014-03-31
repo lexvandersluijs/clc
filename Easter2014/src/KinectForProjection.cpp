@@ -31,7 +31,7 @@ void KinectForProjection::setupGUI()
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " FL";
-	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 2000, 400 ));
+	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 3000, 400 ));
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " PP X";
@@ -65,7 +65,9 @@ void KinectForProjection::update()
 		for( int i = 0; i < kinect.getSkeletons().size(); i++) 
 		{
 
-			if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end())
+			if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end() && 
+				kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT) != kinect.getSkeletons().at(i).end() &&
+				kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT) != kinect.getSkeletons().at(i).end())
 			{
 				//cout << "head was found" << endl;
 
@@ -75,24 +77,6 @@ void KinectForProjection::update()
 				SkeletonBone leftHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
 				SkeletonBone rightHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
 
-/*				ofVec3f hb( -headBone.getStartPosition().x, headBone.getStartPosition().y, 0 );
-				head = head.getInterpolated(hb, 0.5);
-				head.z =  ofInterpolateCosine( head.z, headBone.getStartPosition().x, 0.5) + 0.1;
-
-				leftHandPrev = leftHand;
-				ofVec3f lhb(-leftHandBone.getStartPosition().x, leftHandBone.getStartPosition().y, 0);
-				leftHand = leftHand.getInterpolated( lhb, 0.5);
-				leftHand.z = ofInterpolateCosine( leftHand.z, leftHandBone.getStartPosition().x, 0.5);
-
-				leftHandDirection = (leftHand - leftHandPrev) * 10.0;
-
-				rightHandPrev = rightHand;
-				ofVec3f rhb(-rightHandBone.getStartPosition().x, rightHandBone.getStartPosition().y, 0);
-				rightHand = rightHand.getInterpolated( rhb, 0.5);
-				rightHand.z = ofInterpolateCosine( rightHand.z, rightHandBone.getStartPosition().x, 0.5);
-
-				rightHandDirection = (rightHand - rightHandPrev) * 10.0;
-*/
 				// transform the 3D tracked values from Kinect to our 2D presentation/simulation space
 				presentationSpaceJoints[Head].setNewPosition(transformTrackedPointToProjectorScreen(headBone.getStartPosition()));
 				presentationSpaceJoints[LeftHand].setNewPosition(transformTrackedPointToProjectorScreen(leftHandBone.getStartPosition()));
