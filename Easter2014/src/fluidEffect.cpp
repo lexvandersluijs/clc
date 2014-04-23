@@ -15,14 +15,14 @@ void FluidEffect::setup(int w, int h, float screenToFluidScale)
 	fluid.allocate(width, height, screenToFluidScale); 
     
 	_velocityMap.allocate(fluid.getVelocityFbo().getWidth(), fluid.getVelocityFbo().getHeight(), ofImageType::OF_IMAGE_COLOR);
-	_fboReader.setAsync(true);
+	//_fboReader.setAsync(true);
 
 	// Seting the gravity set up & injecting the background image
 	//
 	fluid.dissipation = 0.99;
 	fluid.velocityDissipation = 0.99;
     
-	fluid.setGravity(ofVec2f(0.0,-0.005));
+	fluid.setGravity(ofVec2f(0.0,-0.05));
 //    fluid.setGravity(ofVec2f(0.0,0.0098));
     
 	//  Set obstacle
@@ -36,7 +36,7 @@ void FluidEffect::setup(int w, int h, float screenToFluidScale)
     
 	// Adding constant forces
 	//
-	fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 3.f);
+	//fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 3.f);
 
 	// register event listeners
 	ofAddListener(appSettings::instance().timeline.events().bangFired, this, &FluidEffect::receivedBang);

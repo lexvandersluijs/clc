@@ -6,17 +6,22 @@ void KinectForProjection::setup(int index)
 
 	kinect.initSensor( _index );
 	
-	kinect.initColorStream(640, 480);
+	//kinect.initColorStream(640, 480);
 	kinect.initDepthStream(320, 240, true);
 	kinect.initSkeletonStream(true);
 
 	kinect.start();
 
 	if(kinect.getNuiSensor() != nullptr)
-		kinect.getNuiSensor()->NuiCameraElevationSetAngle(15);
+		kinect.getNuiSensor()->NuiCameraElevationSetAngle(18);
 
 	hasSkeleton = false;
-	jointDistance = 1.f;
+
+}
+
+KinectForProjection::~KinectForProjection()
+{
+	kinect.stop();
 }
 
 void KinectForProjection::setupGUI()
@@ -26,12 +31,16 @@ void KinectForProjection::setupGUI()
 	appSettings::instance().gui.add(kinectVerticalOffset.setup( nameSS.str(), kinectOffsetFromProjector.y, -300, 300, 400 ));
 
 	nameSS = stringstream();
+	nameSS << "kinect " << _index << " horizontal offset";
+	appSettings::instance().gui.add(kinectHorizontalOffset.setup( nameSS.str(), kinectOffsetFromProjector.x, -300, 300, 400 ));
+
+	nameSS = stringstream();
 	nameSS << "kinect " << _index << " forward offset";
 	appSettings::instance().gui.add(kinectForwardOffset.setup( nameSS.str(), kinectOffsetFromProjector.z, 0, 400, 400 ));
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " FL";
-	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 3000, 400 ));
+	appSettings::instance().gui.add(toPresentationSpaceFocalLengthSlider.setup( nameSS.str(), toPresentationSpaceFocalLength, 300, 1000, 400 ));
 
 	nameSS = stringstream();
 	nameSS << "pres " << _index << " PP X";
@@ -46,6 +55,7 @@ void KinectForProjection::setupGUI()
 void KinectForProjection::updateFromGUI()
 {
 	kinectOffsetFromProjector.y = kinectVerticalOffset;
+	kinectOffsetFromProjector.x = kinectHorizontalOffset;
 	kinectOffsetFromProjector.z = kinectForwardOffset;
 	toPresentationSpaceFocalLength = toPresentationSpaceFocalLengthSlider;
 	toPresentationSpacePrincipalPoint.x = toPresentationSpacePrincipalX;
@@ -57,6 +67,8 @@ void KinectForProjection::update()
 {
 	kinect.update();
 
+	hasSkeleton = false;
+
 	if(kinect.isNewSkeleton()) 
 	{
 
@@ -65,7 +77,7 @@ void KinectForProjection::update()
 		for( int i = 0; i < kinect.getSkeletons().size(); i++) 
 		{
 
-			if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end() && 
+			if( // kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end() && 
 				kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT) != kinect.getSkeletons().at(i).end() &&
 				kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT) != kinect.getSkeletons().at(i).end())
 			{
@@ -73,15 +85,15 @@ void KinectForProjection::update()
 
 
 				// just get the first one
-				SkeletonBone headBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second;
+				//SkeletonBone headBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second;
 				SkeletonBone leftHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
 				SkeletonBone rightHandBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
 
 				// transform the 3D tracked values from Kinect to our 2D presentation/simulation space
-				presentationSpaceJoints[Head].setNewPosition(transformTrackedPointToProjectorScreen(headBone.getStartPosition()));
+				//presentationSpaceJoints[Head].setNewPosition(transformTrackedPointToProjectorScreen(headBone.getStartPosition()));
 				presentationSpaceJoints[LeftHand].setNewPosition(transformTrackedPointToProjectorScreen(leftHandBone.getStartPosition()));
 				presentationSpaceJoints[RightHand].setNewPosition(transformTrackedPointToProjectorScreen(rightHandBone.getStartPosition()));
-
+/*
 				static int counter = 0;
 				// dump to console to check results
 				if(counter%20 == 0)
@@ -91,14 +103,8 @@ void KinectForProjection::update()
 					cout << "RightHand 3D: " << rightHandBone.getStartPosition() << ", 2D: " << presentationSpaceJoints[RightHand].getPosition() << endl;
 				}
 				counter++;
+*/
 
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second.getScreenPosition() << endl;
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_LEFT)->second.getScreenPosition() << endl;
-				//cout << kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second.getScreenPosition() << endl;
-
-				jointDistance = head.distance(rightHand);
-				jointDistance += leftHand.distance(rightHand);
-				jointDistance += leftHand.distance(head);
 
 				hasSkeleton = true;
 

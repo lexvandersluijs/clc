@@ -54,6 +54,7 @@ enum JointIndex { Head=0, LeftHand=1, RightHand=2 };
 class KinectForProjection
 {
 public:
+	~KinectForProjection();
 
 	ofxKinectCommonBridge kinect;
 	ofVec3f head;
@@ -61,7 +62,6 @@ public:
 	ofVec3f rightHand, rightHandPrev, rightHandDirection;
 
 	bool hasSkeleton;
-	float jointDistance;
 
 
 	void setup(int index);
@@ -85,6 +85,7 @@ private:
 
 	// GUI elements
 	ofxFloatSlider kinectVerticalOffset;
+	ofxFloatSlider kinectHorizontalOffset;
 	ofxFloatSlider kinectForwardOffset;
 	ofxFloatSlider toPresentationSpaceFocalLengthSlider;
 	ofxFloatSlider toPresentationSpacePrincipalX;

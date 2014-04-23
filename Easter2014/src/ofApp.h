@@ -69,6 +69,22 @@ public:
 	// Visual effects
 	//ofxGaussianBlur		blur;
 
+	// event handler for catching events from 'Flags' timeline
+	void receivedBang(ofxTLBangEventArgs& bang)
+	{
+	  ofLogNotice("Bang fired from track " + bang.track->getName());
+	  if(bang.track->getName() == "Events")
+	  {
+		  if(bang.flag == "C_YellowRed")
+		  {
+			  _colorMode = 1;
+		  }
+		  if(bang.flag == "C_Happy")
+		  {
+			  _colorMode = 2;
+		  }
+	  }
+	}
 
 private:
 	float _prevTime;

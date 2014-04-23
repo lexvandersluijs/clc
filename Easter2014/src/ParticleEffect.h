@@ -58,7 +58,7 @@ public:
 		{
 			_particleManager->Update(timeStep);
 			_particleAnimator->Update(currentTime, timeStep); // compute new properties (position, color, age, etc) all particles
-
+/*
 			glow.begin();
 
 			// first fill with black to make sure we don't have
@@ -80,12 +80,13 @@ public:
 			glow.end();
 
 			glow.update();
+*/
 		}
 	}
 	void draw(int x, int y, float width, float height)
 	{
 		// draw the glows of the lines
-		glow.draw_dontEnableAlphaBlending(x, y, width, height);
+		//glow.draw_dontEnableAlphaBlending(x, y, width, height);
 
 		// draw the lines themselves
 		_particleRenderer->Draw(ofVec2f(x, y), 0.5f);

@@ -31,7 +31,7 @@ public:
 	{
 		// ---------------- initialize timeline --------------
 		timeline.setup(); //registers events
-		timeline.setWidth(1900);
+		timeline.setWidth(1200);
 		timeline.setDurationInSeconds(300); //sets time
 		timeline.setLoopType(OF_LOOP_NORMAL); //turns the timeline to loop
 
@@ -41,7 +41,7 @@ public:
 
 		// ------------------ intialize GUI -------------------
 		gui.setup("Settings", "settings.xml", 10.f, 400.f); 
-		gui.setDefaultWidth(400);
+		gui.setDefaultWidth(640);
 
 		gui.add(speedBasedGeneration.setup("Speed based generation", true));
 	}

@@ -44,10 +44,10 @@ public:
 		fluid.update();
 
 		// SLOOOOW, framerate drops to 30 fps, from 60 (without Kinect attached)
-		//fluid.getVelocityFbo().readToPixels(_velocityMap);
+		fluid.getVelocityFbo().readToPixels(_velocityMap);
 
 		// instead, get contents from buffer asynchronously without stalling everything
-		_fboReader.readToFloatPixels(fluid.getVelocityFbo(), _velocityMap, OF_IMAGE_COLOR);
+		//_fboReader.readToFloatPixels(fluid.getVelocityFbo(), _velocityMap, OF_IMAGE_COLOR);
 	}
 	void draw(int x, int y, float width, float height)
 	{
@@ -79,7 +79,7 @@ public:
 private:
     ofxFluid fluid;
 	ofFloatPixels _velocityMap;
-	ofxFastFboReader _fboReader;
+	//ofxFastFboReader _fboReader;
 
 	int     width,height;
     bool    bPaint, bObstacle, bBounding, bClear;

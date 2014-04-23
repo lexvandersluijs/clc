@@ -50,7 +50,7 @@ void testApp::configureWindowBorder(bool showWindowBorder)
 		::SetWindowLong(hWnd, GWL_EXSTYLE, exstyle);
 
 		// call SetWindowPos to _apply_ the frame change, see http://msdn.microsoft.com/en-us/library/windows/desktop/ms633545(v=vs.85).aspx
-		::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+		::SetWindowPos(hWnd, HWND_TOPMOST, 0,0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE);
 	}
 }
 void testApp::setup()
@@ -61,7 +61,7 @@ void testApp::setup()
 	presentationHeight = 320; //600;
 	float screenToFluidScale = 0.4f;
 
-	bool testWithTwnklsBeamer = true;
+	bool testWithTwnklsBeamer = false;
 	if(testWithTwnklsBeamer)
 	{
 		presentationWidth = 1024; 
@@ -127,6 +127,9 @@ void testApp::setup()
 	receiver.setup(PORT);
 
 	current_msg_string = 0;
+
+	// ---------------------- listen to timeline for color changes -----------------
+	ofAddListener(appSettings::instance().timeline.events().bangFired, this, &testApp::receivedBang);
 }
 
 void testApp::updateFromOSC()
@@ -249,7 +252,10 @@ void testApp::changeProductionModeSetting(bool productionMode)
 			configureWindowBorder(false);
 
 			// move the presentation to exactly to the right of the main window so that it lies in the extended desktop area
-			_presentationOffset = ofVec2f(primaryScreenWidth, 0.f);
+			//_presentationOffset = ofVec2f(primaryScreenWidth, 0.f);
+			
+			// fix for show
+			_presentationOffset = ofVec2f(0.f, 0.f);
 
 			int windowWidth = primaryScreenWidth + presentationWidth;
 			int windowHeight = 1000;
@@ -313,9 +319,9 @@ ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float current
 
 	case 2:
 		if(limbIndex%2 == 0)
-			c = ofFloatColor::fromHsb(fmod(currentTime / 3.f, 1.f), 1.f, 0.7f);
+			c = ofFloatColor::fromHsb(fmod(currentTime / 3.f, 1.f), 1.f, 1.0f);
 		else
-			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 0.7f);
+			c = ofFloatColor::fromHsb(fmod((currentTime / 3.f) + 1.5f, 1.f), 1.f, 1.0f);
 		break;
 
 	// based on velocity (pixels per second)
@@ -325,7 +331,7 @@ ofFloatColor testApp::generateColor(ofVec2f position, ofVec2f dir, float current
 			cout << "speed: " << speed << endl;
 
 			c = ofFloatColor::red;
-			c = c.getLerped(ofFloatColor::yellow, ofClamp(speed / 250.f, 0, 1.f));
+			c = c.getLerped(ofFloatColor::yellow, ofClamp(speed / 500.f, 0, 1.f));
 		}
 		break;
 	}
@@ -512,8 +518,11 @@ void testApp::draw()
 
 void testApp::exit()
 {
-	delete kinectForProjection[0];
-	//delete kinectForProjection[1];
+	for(int i=0; i<nrOfKinects; i++)
+	{
+		delete kinectForProjection[i];
+		kinectForProjection[i] = NULL;
+	}
 
 	particleEffect.exit();
 }
